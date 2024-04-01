@@ -17,10 +17,7 @@ public class Main
         Field<Integer> field_07 = new Field<>("f5", 2024);
         Field<LocalDate> field_08 = new Field<>("f5", today );
 
-
-
         Check<Integer, LocalDate> testYear = new Check<>("is current year", field_07, field_08,(f1, f2) -> f1.getValue() == f2.getValue().getYear());
-
 
         Evaluator evaluator = new Evaluator.Builder()
                 .addGroup(new Group.Builder("group1")
