@@ -14,12 +14,18 @@ Sample:
 Two groups are added, each having two checks. The evaluateGroupChecks() method returns the
 result of the evaluation of all checks for all groups.
 
+    Field<Integer> field_01 = new Field<>("f1", 100);
+    Field<String> field_03 = new Field<>("f3", "Test 1");
+    Field<Integer> field_05 = new Field<>("f5", 100);
+    Field<Integer> field_07 = new Field<>("f5", 2024);
+    
     Evaluator evaluator = new Evaluator.Builder()
                 .addGroup(new Group.Builder("group1")
                         .addCheck(new Check<>("length smaller than", field_03, field_01,(f1, f2) -> f1.getValue().length()< f2.getValue()))
                         .addCheck(new Check<>("equals", field_01, field_05,(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
                         .build())
                 .addGroup(new Group.Builder("group2")
+                        .connectingChecksUsing(ConnectorType.OR)
                         .addCheck(new Check<>("length greater than", field_03, field_01,(f1, f2) -> f1.getValue().length()> f2.getValue()))
                         .addCheck(new Check<>("equals", field_01, field_05,(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
                         .build())

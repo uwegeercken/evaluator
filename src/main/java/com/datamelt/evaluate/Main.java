@@ -1,5 +1,7 @@
 package com.datamelt.evaluate;
 
+import com.datamelt.evaluate.model.ConnectorType;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -21,6 +23,7 @@ public class Main
 
         Evaluator evaluator = new Evaluator.Builder()
                 .addGroup(new Group.Builder("group1")
+                        .connectingChecksUsing(ConnectorType.OR)
                         .addCheck(new Check<>("length smaller than", field_03, field_01,(f1, f2) -> f1.getValue().length()< f2.getValue()))
                         .addCheck(new Check<>("equals", field_01, field_05,(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
                         .addCheck(testYear)
