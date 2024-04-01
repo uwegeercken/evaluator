@@ -17,7 +17,6 @@ result of the evaluation of all checks for all groups.
     Field<Integer> field_01 = new Field<>("f1", 100);
     Field<String> field_03 = new Field<>("f3", "Test 1");
     Field<Integer> field_05 = new Field<>("f5", 100);
-    Field<Integer> field_07 = new Field<>("f5", 2024);
     
     Evaluator evaluator = new Evaluator.Builder()
                 .addGroup(new Group.Builder("group1")
