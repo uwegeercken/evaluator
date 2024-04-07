@@ -9,15 +9,15 @@ public class Check<T,U>
 {
     private static final Logger logger = LoggerFactory.getLogger(Check.class);
     private final String name;
-    private final Field<T> field1;
-    private final Field<U> field2;
-    private final BiFunction<Field<T>, Field<U>, Boolean> check;
+    private final T value1;
+    private final U value2;
+    private final BiFunction<T,U,Boolean> check;
 
-    public Check(String name, Field<T> field1, Field<U> field2, BiFunction<Field<T>, Field<U>, Boolean> check)
+    public Check(String name, T value1, U value2, BiFunction<T,U,Boolean> check)
     {
         this.name = name;
-        this.field1 = field1;
-        this.field2 = field2;
+        this.value1 = value1;
+        this.value2 = value2;
         this.check = check;
     }
 
@@ -28,18 +28,18 @@ public class Check<T,U>
 
     public boolean evaluate()
     {
-        boolean result = check.apply(field1, field2);
-        logger.debug("checking field [{}] against field [{}] using check [{}] --> [{}]", field1.toString(), field2.toString(), name, result);
+        boolean result = check.apply(value1, value2);
+        logger.debug("checking value [{}] against value [{}] using check [{}] --> [{}]", value1.toString(), value2.toString(), name, result);
         return result;
     }
 
-    public Field<T> getField1()
+    public T getValue1()
     {
-        return field1;
+        return value1;
     }
 
-    public Field<U> getField2()
+    public U getValue2()
     {
-        return field2;
+        return value2;
     }
 }

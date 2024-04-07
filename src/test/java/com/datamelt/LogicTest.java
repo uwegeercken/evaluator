@@ -1,14 +1,14 @@
 package com.datamelt;
 
 import com.datamelt.evaluate.Check;
-import com.datamelt.evaluate.Evaluator;
 import com.datamelt.evaluate.Field;
 import com.datamelt.evaluate.Group;
+import com.datamelt.evaluate.Logic;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 
-public class EvaluatorTest
+public class LogicTest
 {
     @Test
     public void testGroupUsingAndConditionSuccessFul()
@@ -18,7 +18,7 @@ public class EvaluatorTest
         Field<String> field_03 = new Field<>("f3", "Test 1");
         Field<Integer> field_05 = new Field<>("f5", 100);
 
-        Evaluator evaluator = new Evaluator.Builder()
+        Logic logic = new Logic.Builder()
                 .addGroup(new Group.Builder("group1")
                         .addCheck(new Check<>("length smaller than", field_03,field_01,(f1, f2) -> f1.getValue().length()< f2.getValue()))
                         .addCheck(new Check<>("equals", field_01,field_05,(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
@@ -29,6 +29,6 @@ public class EvaluatorTest
                         .build())
                 .build();
 
-        assert(evaluator.evaluateGroupChecks());
+        assert(logic.evaluate());
     }
 }

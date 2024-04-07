@@ -38,7 +38,7 @@ public class Group
                 .map(Check::evaluate)
                 .toList();
         boolean combinedChecksResults = getCombinedChecksResults(results).orElse(false);
-        logger.debug("combined results of all checks for group [{}] using connector [{}] --> [{}]", name, connectorBetweenChecks, combinedChecksResults);
+        logger.debug("results of all checks for group [{}] using connector [{}] --> [{}]", name, connectorBetweenChecks, combinedChecksResults);
         return combinedChecksResults;
     }
 

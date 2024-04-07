@@ -1,48 +1,28 @@
 package com.datamelt.evaluate.utilities;
 
-
-
-import com.datamelt.evaluate.Field;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class Row
 {
-    private final Map<String, Field<?>> fields = new HashMap<>();
-    public <T> void addField(Field<T> field)
+    private final Map<String, Object> fields = new HashMap<>();
+    public void addField(String name, Object value)
     {
-        fields.put(field.getName(), field);
+        fields.put(name, value);
     }
 
-    public Map<String, Field<?>> getFields()
+    public Map<String, Object> getFields()
     {
         return fields;
     }
 
-    public Field<Integer> getIntegerField(String name)
+    public String getStringValue(String name)
     {
-        Field<?> field = fields.get(name);
-        if(field.getValue() instanceof Integer)
-        {
-            return (Field<Integer>) fields.get(name);
-        }
-        else
-        {
-            throw new ClassCastException(String.format( "the value of field [%s] is not an integer", name));
-        }
+        return (String) fields.get(name);
     }
 
-    public Field<String> getStringField(String name)
+    public Integer getIntegerValue(String name)
     {
-        Field<?> field = fields.get(name);
-        if(field.getValue() instanceof String)
-        {
-            return (Field<String>) fields.get(name);
-        }
-        else
-        {
-            throw new ClassCastException(String.format( "the value of field [%s] is not a string", name));
-        }
+        return (Integer) fields.get(name);
     }
 }

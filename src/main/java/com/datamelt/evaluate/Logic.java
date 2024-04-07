@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Evaluator
+public class Logic
 {
-    private static final Logger logger = LoggerFactory.getLogger(Evaluator.class);
+    private static final Logger logger = LoggerFactory.getLogger(Logic.class);
     private final List<ConnectedGroup> groups;
 
-    private Evaluator(Builder builder)
+    private Logic(Builder builder)
     {
         this.groups = builder.groups;
     }
@@ -24,7 +24,7 @@ public class Evaluator
         return groups;
     }
 
-    public boolean evaluateGroupChecks(String name)
+    public boolean evaluate(String name)
     {
         return getGroup(name).orElseThrow().getGroup().evaluateChecks();
     }
@@ -36,16 +36,18 @@ public class Evaluator
                 .findFirst();
     }
 
-    public boolean evaluateGroupChecks()
+    public boolean evaluate()
     {
         List<String> connectors = groups.stream()
+                .skip(1)
                 .map(connectedGroup -> connectedGroup.toString())
                 .toList();
 
         boolean result = groups.stream()
                 .map(connectedGroup -> new GroupEvaluationResult(connectedGroup.getGroup().evaluateChecks(), connectedGroup.getConnectorToPreviousGroup()))
                 .reduce(GroupResultCombiner::combineResults).map(groupEvaluationResult -> groupEvaluationResult.getPassed()).orElse(false);
-        logger.debug("combined results of all groups using connector to previous group {} --> [{}]", connectors, result);
+
+        logger.debug("results of all groups using connector to previous group {} --> [{}]", connectors, result);
         return result;
     }
 
@@ -72,9 +74,9 @@ public class Evaluator
             return this;
         }
 
-        public Evaluator build()
+        public Logic build()
         {
-            return new Evaluator(this);
+            return new Logic(this);
         }
 
         private Optional<ConnectedGroup> getGroup(String name)
