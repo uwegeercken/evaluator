@@ -1,4 +1,4 @@
-package com.datamelt.evaluate;
+package com.datamelt.evaluate.check;
 
 import com.datamelt.evaluate.model.ConnectorType;
 

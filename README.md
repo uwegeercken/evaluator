@@ -1,4 +1,4 @@
-# evaluator
+# logic
 
 Library to construct checks on values of two fields using flexible AND and OR conditions.
 
@@ -19,7 +19,7 @@ The evaluateGroupChecks() method returns the result of the evaluation of all che
     Field<String> field_03 = new Field<>("f3", "Test 1");
     Field<Integer> field_05 = new Field<>("f5", 100);
     
-    Evaluator evaluator = new Evaluator.Builder()
+    Evaluator logic = new Evaluator.Builder()
                 .addGroup(new Group.Builder("group1")
                         .addCheck(new Check<>("length smaller than", field_03, field_01,(f1, f2) -> f1.getValue().length()< f2.getValue()))
                         .addCheck(new Check<>("equals", field_01, field_05,(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
@@ -31,7 +31,7 @@ The evaluateGroupChecks() method returns the result of the evaluation of all che
                         .build())
                 .build();
 
-    boolean evaluatorResult = evaluator.evaluateGroupChecks();
-    System.out.println("evaluator result for all checks and groups: " + evaluatorResult);
+    boolean evaluatorResult = logic.evaluateGroupChecks();
+    System.out.println("logic result for all checks and groups: " + evaluatorResult);
 
 last update: Uwe Geercken - 2024/04/01

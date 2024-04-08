@@ -1,87 +1,42 @@
 package com.datamelt.evaluate;
 
-import com.datamelt.evaluate.model.ConnectorType;
-import com.datamelt.evaluate.model.DuplicateElementException;
+import com.datamelt.evaluate.check.ConnectedGroup;
+import com.datamelt.evaluate.check.GroupEvaluationResult;
+import com.datamelt.evaluate.check.GroupResultCombiner;
+import com.datamelt.evaluate.check.Logic;
+import com.datamelt.evaluate.model.LogicProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Evaluator
 {
     private static final Logger logger = LoggerFactory.getLogger(Evaluator.class);
-    private final List<ConnectedGroup> groups;
 
-    private Evaluator(Builder builder)
+    public static <T> boolean evaluate(LogicProvider<T> provider, T data)
     {
-        this.groups = builder.groups;
+        return evaluate(provider.mapValues(data));
     }
 
-    public List<ConnectedGroup> getGroups()
+    private static boolean evaluate(Logic logic)
     {
-        return groups;
-    }
-
-    public boolean evaluateGroupChecks(String name)
-    {
-        return getGroup(name).orElseThrow().getGroup().evaluateChecks();
-    }
-
-    private Optional<ConnectedGroup> getGroup(String name)
-    {
-        return groups.stream()
-                .filter(group -> group.getGroup().getName().equals(name))
-                .findFirst();
-    }
-
-    public boolean evaluateGroupChecks()
-    {
-        List<String> connectors = groups.stream()
-                .map(connectedGroup -> connectedGroup.toString())
+        List<String> connectors = logic.getGroups().stream()
+                .skip(1)
+                .map(ConnectedGroup::toString)
                 .toList();
 
-        boolean result = groups.stream()
+        boolean result = logic.getGroups().stream()
                 .map(connectedGroup -> new GroupEvaluationResult(connectedGroup.getGroup().evaluateChecks(), connectedGroup.getConnectorToPreviousGroup()))
-                .reduce(GroupResultCombiner::combineResults).map(groupEvaluationResult -> groupEvaluationResult.getPassed()).orElse(false);
-        logger.debug("combined results of all groups using connector to previous group {} --> [{}]", connectors, result);
+                .reduce(GroupResultCombiner::combineResults).map(GroupEvaluationResult::getPassed).orElse(false);
+
+        logger.debug("results of all groups using connector to previous group {} --> [{}]", connectors, result);
         return result;
     }
 
-    public static class Builder
-    {
-        private final List<ConnectedGroup> groups = new ArrayList<>();
+    //    public boolean evaluate(String name)
+//    {
+//        return getGroup(name).orElseThrow().getGroup().evaluateChecks();
+//    }
 
-        public Builder addGroup(Group group, ConnectorType connectorToPreviousGroup)
-        {
-            if(getGroup(group.getName()).isPresent())
-            {
-                throw new DuplicateElementException(String.format("group with same name [%s] was already added", group.getName()));
-            }
-            else
-            {
-                groups.add(new ConnectedGroup(group, connectorToPreviousGroup));
-            }
-            return this;
-        }
-
-        public Builder addGroup(Group group)
-        {
-            addGroup(group, ConnectorType.AND);
-            return this;
-        }
-
-        public Evaluator build()
-        {
-            return new Evaluator(this);
-        }
-
-        private Optional<ConnectedGroup> getGroup(String name)
-        {
-            return groups.stream()
-                    .filter(group -> group.getGroup().getName().equals(name))
-                    .findFirst();
-        }
-    }
 }

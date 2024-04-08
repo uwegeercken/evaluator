@@ -1,4 +1,4 @@
-package com.datamelt.evaluate;
+package com.datamelt.evaluate.utilities;
 
 import com.datamelt.evaluate.model.GenericField;
 
