@@ -25,4 +25,24 @@ public class Row
     {
         return (Integer) fields.get(name);
     }
+
+    public Long getLongValue(String name)
+    {
+        return (Long) fields.get(name);
+    }
+
+    public Double getDoubleValue(String name)
+    {
+        return (Double) fields.get(name);
+    }
+
+    public Float getFloatValue(String name)
+    {
+        return (Float) fields.get(name);
+    }
+
+    public Boolean getBooleanValue(String name)
+    {
+        return (Boolean) fields.get(name);
+    }
 }

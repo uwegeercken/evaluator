@@ -1,4 +1,4 @@
-package com.datamelt.evaluate;
+package com.datamelt.evaluate.check;
 
 import com.datamelt.evaluate.model.ConnectorType;
 import com.datamelt.evaluate.model.DuplicateElementException;
@@ -24,31 +24,11 @@ public class Logic
         return groups;
     }
 
-    public boolean evaluate(String name)
-    {
-        return getGroup(name).orElseThrow().getGroup().evaluateChecks();
-    }
-
     private Optional<ConnectedGroup> getGroup(String name)
     {
         return groups.stream()
                 .filter(group -> group.getGroup().getName().equals(name))
                 .findFirst();
-    }
-
-    public boolean evaluate()
-    {
-        List<String> connectors = groups.stream()
-                .skip(1)
-                .map(connectedGroup -> connectedGroup.toString())
-                .toList();
-
-        boolean result = groups.stream()
-                .map(connectedGroup -> new GroupEvaluationResult(connectedGroup.getGroup().evaluateChecks(), connectedGroup.getConnectorToPreviousGroup()))
-                .reduce(GroupResultCombiner::combineResults).map(groupEvaluationResult -> groupEvaluationResult.getPassed()).orElse(false);
-
-        logger.debug("results of all groups using connector to previous group {} --> [{}]", connectors, result);
-        return result;
     }
 
     public static class Builder

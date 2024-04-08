@@ -1,9 +1,7 @@
-package com.datamelt;
+package com.datamelt.evaluate.check;
 
-import com.datamelt.evaluate.Check;
-import com.datamelt.evaluate.Field;
-import com.datamelt.evaluate.Group;
 import com.datamelt.evaluate.model.ConnectorType;
+import com.datamelt.evaluate.utilities.Field;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;

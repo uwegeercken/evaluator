@@ -1,33 +1,24 @@
-package com.datamelt.evaluate;
+package com.datamelt.testimplementation;
 
+import com.datamelt.evaluate.check.Check;
+import com.datamelt.evaluate.check.Group;
+import com.datamelt.evaluate.check.Logic;
 import com.datamelt.evaluate.model.ConnectorType;
+import com.datamelt.evaluate.model.LogicProvider;
 import com.datamelt.evaluate.utilities.Row;
 
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-public class TestProvider implements LogicProvider
+public class TestProvider implements LogicProvider<Row>
 {
-    private final Row row = new Row();
-
     private final BiFunction<Integer,LocalDate,Boolean> checkYear = (f1, f2) -> f1 == f2.getYear();
 
-    public TestProvider(String rowOfData)
-    {
-        // SAMPLE DATA: "hello;100;200;2024"
-
-        String[] parts = rowOfData.split(";");
-        row.addField("field-0", parts[0]);
-        row.addField("field-1", Integer.valueOf(parts[1]));
-        row.addField("field-2", Integer.valueOf(parts[2]));
-        row.addField("field-3", Integer.valueOf(parts[3]));
-    }
-
     @Override
-    public Logic mapValues()
+    public Logic mapValues(Row row)
     {
-        Logic logic = new Logic.Builder()
+        return new Logic.Builder()
                 .addGroup(new Group.Builder("group1")
                         .connectingChecksUsing(ConnectorType.OR)
                         .addCheck(new Check<>("length smaller than", row.getStringValue("field-0"), row.getIntegerValue("field-1"),(f1, f2) -> f1.length() < f2))
@@ -38,6 +29,5 @@ public class TestProvider implements LogicProvider
                         .addCheck(new Check<>("equals", 1, 1,(f1, f2) -> Objects.equals(f1, f2)))
                         .build())
                 .build();
-        return logic;
     }
 }

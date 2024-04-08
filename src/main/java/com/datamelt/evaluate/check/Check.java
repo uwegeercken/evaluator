@@ -1,4 +1,4 @@
-package com.datamelt.evaluate;
+package com.datamelt.evaluate.check;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
