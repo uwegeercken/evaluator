@@ -1,6 +1,6 @@
 # logic
 
-Library to construct checks on values of two fields using flexible AND and OR conditions.
+Library to construct logic to check values using flexible AND and OR conditions and grouping.
 
 Checks can be added to groups, where the checks are connected using an AND or an OR condition. Multiple groups can
 also be connected using an AND or an OR condition. This way one can create complex logic easily.
@@ -10,28 +10,41 @@ The default for the connector between the checks of a group as well as the conne
 Checks have a name and specify two fields plus the logic to apply to the fields. The logic is a lambda expression which
 evaluates to a boolean true or false.
 
-Sample:
-Two groups are added, each having two checks. The checks of the second group are connected using an OR condition.
-There is no 
-The evaluateGroupChecks() method returns the result of the evaluation of all checks for all groups.
+Define the checks in a class which implements the LogicProvider interface, like this:
 
-    Field<Integer> field_01 = new Field<>("f1", 100);
-    Field<String> field_03 = new Field<>("f3", "Test 1");
-    Field<Integer> field_05 = new Field<>("f5", 100);
-    
-    Evaluator logic = new Evaluator.Builder()
-                .addGroup(new Group.Builder("group1")
-                        .addCheck(new Check<>("length smaller than", field_03, field_01,(f1, f2) -> f1.getValue().length()< f2.getValue()))
-                        .addCheck(new Check<>("equals", field_01, field_05,(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
-                        .build())
-                .addGroup(new Group.Builder("group2")
-                        .connectingChecksUsing(ConnectorType.OR)
-                        .addCheck(new Check<>("length greater than", field_03, field_01,(f1, f2) -> f1.getValue().length()> f2.getValue()))
-                        .addCheck(new Check<>("equals", field_01, field_05,(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
-                        .build())
-                .build();
+    LogicProvider<Row> logicProvider = new TestProvider();
 
-    boolean evaluatorResult = logic.evaluateGroupChecks();
-    System.out.println("logic result for all checks and groups: " + evaluatorResult);
+"Row" in this sample is a class which implements a data row and its fields. The TestProvider class implements the
+LogicProvider Interface and the method "mapValues(...)". In this method the logic that is to be applied on the data
+is defined as well as the data values to be used.
 
-last update: Uwe Geercken - 2024/04/01
+    @Override
+    public Logic mapValues(Row row)
+    {
+        return new Logic.Builder()
+            .addGroup(new Group.Builder("group1")
+                .connectingChecksUsing(ConnectorType.OR)
+                .addCheck(new Check<>("length smaller than", row.getStringValue("field-0"), row.getIntegerValue("field-1"),(f1, f2) -> f1.length() < f2))
+                .addCheck(new Check<>("equals", row.getIntegerValue("field-1"),row.getIntegerValue("field-2"),(f1, f2) -> Objects.equals(f1, f2)))
+            .build())
+            .addGroup(new Group.Builder("group2")
+                .addCheck(new Check<>("equals", 1, 1,(f1, f2) -> Objects.equals(f1, f2)))
+            .build())
+        .build();
+    }
+
+Once the "mapValues(...)" method is defined, evaluate the defined logic/checks against the data:
+
+        boolean result = Evaluator.evaluate(logicProvider, row));
+
+You can - instead of a Row object shown above - e.g. use a line from a CSV file, split it into its fields and run the
+logic against these fields. You may also loop over e.g. all lines in a CSV file or records of a resultset from a database
+query and check the validity of the data using a defined logic.
+
+Instead of defining lambda expressions over and over again, you could also put them in a different class or library and use them as
+static variables.
+
+Using groups, the "and" or "or" connector between the individual checks, as well as the "and" or "or" between the different groups
+you can build very complex logic in a simple way without the need to use lots of brackets.
+
+last update: Uwe Geercken - 2024/04/08
