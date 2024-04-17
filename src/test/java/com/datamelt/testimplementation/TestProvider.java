@@ -1,33 +1,39 @@
 package com.datamelt.testimplementation;
 
+import com.datamelt.evaluate.Evaluator;
 import com.datamelt.evaluate.check.Check;
 import com.datamelt.evaluate.check.Group;
 import com.datamelt.evaluate.check.Logic;
-import com.datamelt.evaluate.model.ConnectorType;
-import com.datamelt.evaluate.model.LogicProvider;
 import com.datamelt.evaluate.utilities.Row;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.function.BiFunction;
 
-public class TestProvider implements LogicProvider<Row>
+public class TestProvider
 {
     private final BiFunction<Integer,LocalDate,Boolean> checkYear = (f1, f2) -> f1 == f2.getYear();
 
-    @Override
-    public Logic mapValues(Row row)
+    public static void main(String[] args)
     {
-        return new Logic.Builder()
-                .addGroup(new Group.Builder("group1")
-                        .connectingChecksUsing(ConnectorType.OR)
-                        .addCheck(new Check<>("length smaller than", row.getStringValue("field-0"), row.getIntegerValue("field-1"),(f1, f2) -> f1.length() < f2))
-                        .addCheck(new Check<>("equals", row.getIntegerValue("field-1"),row.getIntegerValue("field-2"),(f1, f2) -> Objects.equals(f1, f2)))
-                        .addCheck(new Check<>("checkYear", row.getIntegerValue("field-3"), LocalDate.now(), checkYear))
-                        .build())
-                .addGroup(new Group.Builder("group2")
-                        .addCheck(new Check<>("equals", 1, 1,(f1, f2) -> Objects.equals(f1, f2)))
+        Logic<Row> logic = new Logic.Builder<Row>()
+                .addGroup(new Group.Builder<Row>("group1")
+                        .addCheck(new Check<>("length smaller than", f1 -> f1.getStringValue("test1") == "gaga"))
                         .build())
                 .build();
+
+        Logic<String> logic2 = new Logic.Builder<String>()
+                .addGroup(new Group.Builder<String>("group1")
+                        .addCheck(new Check<>("length smaller than", f1 -> f1.length() == 4))
+                        .build())
+                .build();
+
+        Row row = new Row();
+        row.addField("test1","gaga");
+
+        boolean result = Evaluator.evaluate(logic,row);
+
+        boolean result2 = Evaluator.evaluate(logic2,"abcd");
     }
+
+
 }

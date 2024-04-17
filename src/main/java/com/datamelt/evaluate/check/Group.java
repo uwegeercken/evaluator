@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Group
+public class Group<T>
 {
     private static final Logger logger = LoggerFactory.getLogger(Group.class);
-    private final List<Check<?,?>> checks;
+    private final List<Check<T>> checks;
     private final String name;
     private final ConnectorType connectorBetweenChecks;
 
-    public Group(Builder builder)
+    public Group(Builder<T> builder)
     {
         this.name = builder.name;
         this.connectorBetweenChecks = builder.connectorType;
@@ -32,10 +32,10 @@ public class Group
         return connectorBetweenChecks;
     }
 
-    public boolean evaluateChecks()
+    public boolean evaluateChecks(T dataObject)
     {
         List<Boolean> results = checks.stream()
-                .map(Check::evaluate)
+                .map(checks -> checks.evaluate(dataObject))
                 .toList();
         boolean combinedChecksResults = getCombinedChecksResults(results).orElse(false);
         logger.debug("results of all checks for group [{}] using connector [{}] --> [{}]", name, connectorBetweenChecks, combinedChecksResults);
@@ -60,9 +60,9 @@ public class Group
         }
     }
 
-    public static class Builder
+    public static class Builder<T>
     {
-        private final List<Check<?,?>> checks = new ArrayList<>();
+        private final List<Check<T>> checks = new ArrayList<>();
         private final String name;
         private ConnectorType connectorType = ConnectorType.AND;
 
@@ -71,21 +71,21 @@ public class Group
             this.name = name;
         }
 
-        public Builder connectingChecksUsing(ConnectorType connectorType)
+        public Builder<T> connectingChecksUsing(ConnectorType connectorType)
         {
             this.connectorType = connectorType;
             return this;
         }
 
-        public Builder addCheck(Check<?,?> check)
+        public Builder<T> addCheck(Check<T> check)
         {
             checks.add(check);
             return this;
         }
 
-        public Group build()
+        public Group<T> build()
         {
-            return new Group(this);
+            return new Group<>(this);
         }
     }
 }
