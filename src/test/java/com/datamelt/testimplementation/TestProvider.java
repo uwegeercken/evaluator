@@ -4,6 +4,7 @@ import com.datamelt.evaluate.Evaluator;
 import com.datamelt.evaluate.check.Check;
 import com.datamelt.evaluate.check.Group;
 import com.datamelt.evaluate.check.Logic;
+import com.datamelt.evaluate.model.ConnectorType;
 import com.datamelt.evaluate.utilities.Row;
 
 import java.time.LocalDate;
@@ -19,12 +20,15 @@ public class TestProvider
                 .addGroup(new Group.Builder<Row>("group1")
                         .addCheck(new Check<>("length smaller than", f1 -> f1.getStringValue("test1") == "gaga"))
                         .build())
+                .addGroup(new Group.Builder<Row>("group2")
+                        .addCheck(new Check<>("length greater than", f1 -> f1.getStringValue("test1") == "bubu"))
+                        .build(),ConnectorType.AND)
                 .build();
 
         Logic<String> logic2 = new Logic.Builder<String>()
                 .addGroup(new Group.Builder<String>("group1")
                         .addCheck(new Check<>("length smaller than", f1 -> f1.length() == 4))
-                        .build())
+                        .build(), ConnectorType.OR)
                 .build();
 
         Row row = new Row();

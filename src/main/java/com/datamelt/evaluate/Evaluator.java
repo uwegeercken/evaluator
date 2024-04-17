@@ -29,7 +29,14 @@ public class Evaluator
                 .map(connectedGroup -> new GroupEvaluationResult(connectedGroup.getGroup().evaluateChecks(data), connectedGroup.getConnectorToPreviousGroup()))
                 .reduce(GroupResultCombiner::combineResults).map(GroupEvaluationResult::getPassed).orElse(false);
 
-        logger.debug("results of all groups using connector to previous group {} --> [{}]", connectors, result);
+        if(logic.getGroups().size()>1)
+        {
+            logger.debug("results of all groups using connector to previous group {} --> [{}]", connectors, result);
+        }
+        else
+        {
+            logger.debug("results of group --> [{}]", result);
+        }
         return result;
     }
 
