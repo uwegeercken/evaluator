@@ -1,58 +1,52 @@
 package com.datamelt.evaluate.check;
 
+import com.datamelt.evaluate.model.ConnectorType;
+import org.junit.jupiter.api.Test;
+
+import java.util.Objects;
+
 public class GroupTest
 {
-//    @Test
-//    public void testGroupUsingAndConditionSuccessFul()
-//    {
-//        Group group1 = new Group.Builder("group1")
-//                .addCheck(new Check<>("is smaller", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() < f2.getValue()))
-//                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
-//                .build();
-//        assert(group1.evaluateChecks());
-//    }
-//
-//    @Test
-//    public void testGroupUsingAndConditionFailed()
-//    {
-//        Group group1 = new Group.Builder("group1")
-//                .addCheck(new Check<>("is greater", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() > f2.getValue()))
-//                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
-//                .build();
-//        assert(!group1.evaluateChecks());
-//    }
-//
-//    @Test
-//    public void testGroupUsingOrConditionSuccessFul()
-//    {
-//        Group group1 = new Group.Builder("group1")
-//                .connectingChecksUsing(ConnectorType.OR)
-//                .addCheck(new Check<>("is greater", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() > f2.getValue()))
-//                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
-//                .build();
-//        assert(group1.evaluateChecks());
-//
-//    }
-//
-//    @Test
-//    public void testGroupUsingOrConditionFailed()
-//    {
-//        Group group1 = new Group.Builder("group1")
-//                .connectingChecksUsing(ConnectorType.OR)
-//                .addCheck(new Check<>("is greater", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() > f2.getValue()))
-//                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",300),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
-//                .build();
-//        assert(!group1.evaluateChecks());
-//    }
-//
-//    @Test
-//    public void testMixedTypeGroupUsingAndConditionSuccessFul()
-//    {
-//        Group group1 = new Group.Builder("group1")
-//                .addCheck(new Check<>("length equals", new Field<>("field-01","1234567890"), new Field<>("field-02",10),(f1, f2) -> f1.getValue().length() == f2.getValue()))
-//                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
-//                .build();
-//
-//        assert(group1.evaluateChecks());
-//    }
+    @Test
+    public void testGroupUsingAndConditionSuccessFul()
+    {
+        Group<Integer> group1 = new Group.Builder<Integer>("group1")
+                .addCheck("is smaller", value -> value > 1)
+                .addCheck("equals", value -> Objects.equals(value, 200))
+                .build();
+        assert(group1.evaluateChecks(200));
+    }
+
+    @Test
+    public void testGroupUsingAndConditionFailed()
+    {
+        Group<String> group1 = new Group.Builder<String>("group1")
+                .addCheck("is greater", value -> value.length() < 1000)
+                .addCheck("equals", value -> value.equals("hello"))
+                .build();
+        assert(!group1.evaluateChecks("Alibaba"));
+    }
+
+    @Test
+    public void testGroupUsingOrConditionSuccessFul()
+    {
+        Group<Long> group1 = new Group.Builder<Long>("group1")
+                .connectingChecksUsing(ConnectorType.OR)
+                .addCheck("is greater", value -> value >1000)
+                .addCheck("equals", value -> value!=10)
+                .build();
+        assert(group1.evaluateChecks(333L));
+
+    }
+
+    @Test
+    public void testGroupUsingOrConditionFailed()
+    {
+        Group<Integer> group1 = new Group.Builder<Integer>("group1")
+                .connectingChecksUsing(ConnectorType.OR)
+                .addCheck("is greater", value -> value==0)
+                .addCheck("equals", value -> value==1)
+                .build();
+        assert(!group1.evaluateChecks(9999));
+    }
 }

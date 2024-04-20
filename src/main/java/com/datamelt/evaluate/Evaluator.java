@@ -13,11 +13,6 @@ public class Evaluator
 {
     private static final Logger logger = LoggerFactory.getLogger(Evaluator.class);
 
-//    public static <T> boolean evaluate(LogicProvider<T> provider, T data)
-//    {
-//        return evaluate(provider.mapValues(data));
-//    }
-
     public static <T> boolean evaluate(Logic<T> logic, T data)
     {
         List<String> connectors = logic.getGroups().stream()
@@ -39,6 +34,7 @@ public class Evaluator
         }
         return result;
     }
+
 
     //    public boolean evaluate(String name)
 //    {

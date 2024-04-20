@@ -24,13 +24,6 @@ public class Logic<T>
         return groups;
     }
 
-    private Optional<ConnectedGroup<T>> getGroup(String name)
-    {
-        return groups.stream()
-                .filter(group -> group.getGroup().getName().equals(name))
-                .findFirst();
-    }
-
     public static class Builder<T>
     {
         private final List<ConnectedGroup<T>> groups = new ArrayList<>();
@@ -43,7 +36,7 @@ public class Logic<T>
             }
             else
             {
-                groups.add(new ConnectedGroup(group, connectorToPreviousGroup));
+                groups.add(new ConnectedGroup<>(group, connectorToPreviousGroup));
             }
             return this;
         }

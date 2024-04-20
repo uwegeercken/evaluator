@@ -22,9 +22,9 @@ public class Check<T>
         return name;
     }
 
-    public boolean evaluate(T dataObject)
+    public boolean evaluate(T value)
     {
-        boolean result = check.test(dataObject);
+        boolean result = check.test(value);
         //logger.debug("checking value [{}] against value [{}] using check [{}] --> [{}]", value1.toString(), value2.toString(), name, result);
         return result;
     }

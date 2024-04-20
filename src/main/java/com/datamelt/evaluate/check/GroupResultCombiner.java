@@ -8,11 +8,11 @@ public class GroupResultCombiner
         {
             case AND ->
             {
-                return new GroupEvaluationResult(groupEvaluationResult1.getPassed() && groupEvaluationResult2.getPassed(), groupEvaluationResult2.getConnectorType());
+                return new GroupEvaluationResult(groupEvaluationResult2.getPassed() && groupEvaluationResult1.getPassed(), groupEvaluationResult2.getConnectorType());
             }
             case OR ->
             {
-                return new GroupEvaluationResult(groupEvaluationResult1.getPassed() || groupEvaluationResult2.getPassed(), groupEvaluationResult2.getConnectorType());
+                return new GroupEvaluationResult(groupEvaluationResult2.getPassed() || groupEvaluationResult1.getPassed(), groupEvaluationResult2.getConnectorType());
             }
             default -> throw new IllegalStateException("unexpected value: " + groupEvaluationResult2.getConnectorType());
         }

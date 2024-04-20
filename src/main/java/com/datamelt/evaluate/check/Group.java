@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class Group<T>
 {
@@ -15,7 +16,7 @@ public class Group<T>
     private final String name;
     private final ConnectorType connectorBetweenChecks;
 
-    public Group(Builder<T> builder)
+    private Group(Builder<T> builder)
     {
         this.name = builder.name;
         this.connectorBetweenChecks = builder.connectorType;
@@ -27,16 +28,19 @@ public class Group<T>
         return name;
     }
 
-    public ConnectorType getCondition()
+    public ConnectorType getConnectorBetweenChecks()
     {
         return connectorBetweenChecks;
     }
 
+    public List<Check<T>> getChecks() { return checks; }
+
     public boolean evaluateChecks(T dataObject)
     {
         List<Boolean> results = checks.stream()
-                .map(checks -> checks.evaluate(dataObject))
+                .map(check -> check.evaluate(dataObject))
                 .toList();
+
         boolean combinedChecksResults = getCombinedChecksResults(results).orElse(false);
         logger.debug("results of all checks for group [{}] using connector [{}] --> [{}]", name, connectorBetweenChecks, combinedChecksResults);
         return combinedChecksResults;
@@ -77,9 +81,9 @@ public class Group<T>
             return this;
         }
 
-        public Builder<T> addCheck(Check<T> check)
+        public Builder<T> addCheck(String name, Predicate<T> predicate)
         {
-            checks.add(check);
+            checks.add(new Check<T>(name, predicate));
             return this;
         }
 
