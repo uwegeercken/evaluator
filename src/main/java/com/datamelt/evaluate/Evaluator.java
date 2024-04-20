@@ -26,7 +26,7 @@ public class Evaluator
 
         if(logic.getGroups().size()>1)
         {
-            logger.debug("results of all groups using connector to previous group {} --> [{}]", connectors, result);
+            logger.debug("result for all groups, using connector to previous group {} --> [{}]", connectors, result);
         }
         else
         {

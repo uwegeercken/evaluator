@@ -38,10 +38,7 @@ public class Row
         return (Double) fields.get(name);
     }
 
-    public Float getFloat(String name)
-    {
-        return (Float) fields.get(name);
-    }
+    public Float getFloat(String name) { return (Float) fields.get(name); }
 
     public Boolean getBoolean(String name)
     {

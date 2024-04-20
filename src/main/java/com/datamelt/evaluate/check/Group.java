@@ -42,7 +42,7 @@ public class Group<T>
                 .toList();
 
         boolean combinedChecksResults = getCombinedChecksResults(results).orElse(false);
-        logger.debug("results of all checks for group [{}] using connector [{}] --> [{}]", name, connectorBetweenChecks, combinedChecksResults);
+        logger.trace("group [{}] using connector between checks [{}], result [{}]", name, connectorBetweenChecks, combinedChecksResults);
         return combinedChecksResults;
     }
 
