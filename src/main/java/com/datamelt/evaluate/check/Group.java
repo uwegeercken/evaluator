@@ -7,15 +7,16 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
-public class Group
+public class Group<T>
 {
     private static final Logger logger = LoggerFactory.getLogger(Group.class);
-    private final List<Check<?,?>> checks;
+    private final List<Check<T>> checks;
     private final String name;
     private final ConnectorType connectorBetweenChecks;
 
-    public Group(Builder builder)
+    private Group(Builder<T> builder)
     {
         this.name = builder.name;
         this.connectorBetweenChecks = builder.connectorType;
@@ -27,18 +28,21 @@ public class Group
         return name;
     }
 
-    public ConnectorType getCondition()
+    public ConnectorType getConnectorBetweenChecks()
     {
         return connectorBetweenChecks;
     }
 
-    public boolean evaluateChecks()
+    public List<Check<T>> getChecks() { return checks; }
+
+    public boolean evaluateChecks(T dataObject)
     {
         List<Boolean> results = checks.stream()
-                .map(Check::evaluate)
+                .map(check -> check.evaluate(dataObject))
                 .toList();
+
         boolean combinedChecksResults = getCombinedChecksResults(results).orElse(false);
-        logger.debug("results of all checks for group [{}] using connector [{}] --> [{}]", name, connectorBetweenChecks, combinedChecksResults);
+        logger.trace("group [{}] using connector between checks [{}], result [{}]", name, connectorBetweenChecks, combinedChecksResults);
         return combinedChecksResults;
     }
 
@@ -60,9 +64,9 @@ public class Group
         }
     }
 
-    public static class Builder
+    public static class Builder<T>
     {
-        private final List<Check<?,?>> checks = new ArrayList<>();
+        private final List<Check<T>> checks = new ArrayList<>();
         private final String name;
         private ConnectorType connectorType = ConnectorType.AND;
 
@@ -71,21 +75,21 @@ public class Group
             this.name = name;
         }
 
-        public Builder connectingChecksUsing(ConnectorType connectorType)
+        public Builder<T> connectingChecksUsing(ConnectorType connectorType)
         {
             this.connectorType = connectorType;
             return this;
         }
 
-        public Builder addCheck(Check<?,?> check)
+        public Builder<T> addCheck(String name, Predicate<T> predicate)
         {
-            checks.add(check);
+            checks.add(new Check<>(name, predicate));
             return this;
         }
 
-        public Group build()
+        public Group<T> build()
         {
-            return new Group(this);
+            return new Group<>(this);
         }
     }
 }

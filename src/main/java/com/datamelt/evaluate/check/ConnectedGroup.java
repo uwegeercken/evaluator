@@ -2,18 +2,18 @@ package com.datamelt.evaluate.check;
 
 import com.datamelt.evaluate.model.ConnectorType;
 
-public class ConnectedGroup
+public class ConnectedGroup<T>
 {
-    private final Group group;
+    private final Group<T> group;
     private final ConnectorType connectorToPreviousGroup;
 
-    public ConnectedGroup(Group group, ConnectorType connectorTypePreviousGroup)
+    public ConnectedGroup(Group<T> group, ConnectorType connectorTypePreviousGroup)
     {
         this.group = group;
         this.connectorToPreviousGroup = connectorTypePreviousGroup;
     }
 
-    public Group getGroup()
+    public Group<T> getGroup()
     {
         return group;
     }
@@ -25,6 +25,6 @@ public class ConnectedGroup
 
     public String toString()
     {
-        return group.getName() + " --> " + getConnectorToPreviousGroup();
+        return getConnectorToPreviousGroup() + " " + group.getName();
     }
 }

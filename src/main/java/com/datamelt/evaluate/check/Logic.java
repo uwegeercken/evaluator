@@ -9,33 +9,53 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Logic
+public class Logic<T>
 {
     private static final Logger logger = LoggerFactory.getLogger(Logic.class);
-    private final List<ConnectedGroup> groups;
+    private final List<ConnectedGroup<T>> groups;
 
-    private Logic(Builder builder)
+    private Logic(Builder<T> builder)
     {
         this.groups = builder.groups;
     }
 
-    public List<ConnectedGroup> getGroups()
+    public List<ConnectedGroup<T>> getGroups()
     {
         return groups;
     }
 
-    private Optional<ConnectedGroup> getGroup(String name)
+    public String getGroupConnectionLogic()
     {
-        return groups.stream()
-                .filter(group -> group.getGroup().getName().equals(name))
-                .findFirst();
+        StringBuilder groupConnectionLogic = new StringBuilder();
+        for(int i=0; i< groups.size()-1; i++)
+        {
+            groupConnectionLogic.append("(");
+        }
+        for(int i=0; i< groups.size(); i++)
+        {
+            ConnectedGroup<T> connectedGroup =groups.get(i);
+            if(i==0)
+            {
+                groupConnectionLogic.append(connectedGroup.getGroup().getName());
+            }
+            else
+            {
+                groupConnectionLogic.append(" ");
+                groupConnectionLogic.append(connectedGroup.getConnectorToPreviousGroup());
+                groupConnectionLogic.append(" ");
+                groupConnectionLogic.append(connectedGroup.getGroup().getName());
+                groupConnectionLogic.append(")");
+            }
+
+        }
+        return groupConnectionLogic.toString();
     }
 
-    public static class Builder
+    public static class Builder<T>
     {
-        private final List<ConnectedGroup> groups = new ArrayList<>();
+        private final List<ConnectedGroup<T>> groups = new ArrayList<>();
 
-        public Builder addGroup(Group group, ConnectorType connectorToPreviousGroup)
+        public Builder<T> addGroup(Group<T> group, ConnectorType connectorToPreviousGroup)
         {
             if(getGroup(group.getName()).isPresent())
             {
@@ -43,23 +63,23 @@ public class Logic
             }
             else
             {
-                groups.add(new ConnectedGroup(group, connectorToPreviousGroup));
+                groups.add(new ConnectedGroup<>(group, connectorToPreviousGroup));
             }
             return this;
         }
 
-        public Builder addGroup(Group group)
+        public Builder<T> addGroup(Group<T> group)
         {
             addGroup(group, ConnectorType.AND);
             return this;
         }
 
-        public Logic build()
+        public Logic<T> build()
         {
-            return new Logic(this);
+            return new Logic<>(this);
         }
 
-        private Optional<ConnectedGroup> getGroup(String name)
+        private Optional<ConnectedGroup<T>> getGroup(String name)
         {
             return groups.stream()
                     .filter(group -> group.getGroup().getName().equals(name))

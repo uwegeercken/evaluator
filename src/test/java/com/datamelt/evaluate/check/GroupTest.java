@@ -1,7 +1,7 @@
 package com.datamelt.evaluate.check;
 
+import com.datamelt.evaluate.Evaluator;
 import com.datamelt.evaluate.model.ConnectorType;
-import com.datamelt.evaluate.utilities.Field;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -9,56 +9,81 @@ import java.util.Objects;
 public class GroupTest
 {
     @Test
-    public void testGroupUsingAndConditionSuccessFul()
+    public void testGroupUsingAndConditionSuccess()
     {
-        Group group1 = new Group.Builder("group1")
-                .addCheck(new Check<>("is smaller", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() < f2.getValue()))
-                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
+        Group<Integer> group1 = new Group.Builder<Integer>("group1")
+                .addCheck("is smaller", value -> value < 1000)
+                .addCheck("equals", value -> Objects.equals(value, 200))
                 .build();
-        assert(group1.evaluateChecks());
+        assert(group1.evaluateChecks(200));
     }
 
     @Test
     public void testGroupUsingAndConditionFailed()
     {
-        Group group1 = new Group.Builder("group1")
-                .addCheck(new Check<>("is greater", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() > f2.getValue()))
-                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
+        Group<String> group1 = new Group.Builder<String>("group1")
+                .addCheck("is greater", value -> value.length() > 1000)
+                .addCheck("equals", value -> value.equals("hello"))
                 .build();
-        assert(!group1.evaluateChecks());
+        assert(!group1.evaluateChecks("Alibaba"));
     }
 
     @Test
-    public void testGroupUsingOrConditionSuccessFul()
+    public void testGroupUsingOrConditionSuccess()
     {
-        Group group1 = new Group.Builder("group1")
+        Group<Long> group1 = new Group.Builder<Long>("group1")
                 .connectingChecksUsing(ConnectorType.OR)
-                .addCheck(new Check<>("is greater", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() > f2.getValue()))
-                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
+                .addCheck("is greater", value -> value > 1000)
+                .addCheck("equals", value -> value==333)
                 .build();
-        assert(group1.evaluateChecks());
+        assert(group1.evaluateChecks(333L));
 
     }
 
     @Test
     public void testGroupUsingOrConditionFailed()
     {
-        Group group1 = new Group.Builder("group1")
+        Group<Integer> group1 = new Group.Builder<Integer>("group1")
                 .connectingChecksUsing(ConnectorType.OR)
-                .addCheck(new Check<>("is greater", new Field<>("field-01",100), new Field<>("field-02",200),(f1, f2) -> f1.getValue() > f2.getValue()))
-                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",300),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
+                .addCheck("is greater", value -> value > 10000)
+                .addCheck("equals", value -> value == 1)
                 .build();
-        assert(!group1.evaluateChecks());
+        assert(!group1.evaluateChecks(9999));
     }
 
     @Test
-    public void testMixedTypeGroupUsingAndConditionSuccessFul()
+    public void testThreeGroupsUsingOrConditionSuccess()
     {
-        Group group1 = new Group.Builder("group1")
-                .addCheck(new Check<>("length equals", new Field<>("field-01","1234567890"), new Field<>("field-02",10),(f1, f2) -> f1.getValue().length() == f2.getValue()))
-                .addCheck(new Check<>("equals", new Field<>("field-03",200), new Field<>("field-03",200),(f1, f2) -> Objects.equals(f1.getValue(), f2.getValue())))
+        Logic<Integer> logic = new Logic.Builder<Integer>()
+                .addGroup(new Group.Builder<Integer>("group1")
+                        .addCheck("is greater", value -> value > 10000)
+                        .build())
+                .addGroup(new Group.Builder<Integer>("group2")
+                        .addCheck("is greater", value -> value > 5000)
+                        .build(), ConnectorType.OR)
+                .addGroup(new Group.Builder<Integer>("group3")
+                        .addCheck("is greater", value -> value < 7500)
+                        .build(), ConnectorType.AND)
                 .build();
 
-        assert(group1.evaluateChecks());
+        assert(Evaluator.evaluate(logic, 6000));
+    }
+
+    @Test
+    public void testThreeGroupsUsingOrConditionFailed()
+    {
+        Logic<Integer> logic = new Logic.Builder<Integer>()
+                .addGroup(new Group.Builder<Integer>("group1")
+                        .addCheck("is greater", value -> value > 10000)
+                        .build())
+                .addGroup(new Group.Builder<Integer>("group2")
+                        .addCheck("is greater", value -> value > 5000)
+                        .build(), ConnectorType.OR)
+                .addGroup(new Group.Builder<Integer>("group3")
+                        .addCheck("is greater", value -> value < 7500)
+                        .build(), ConnectorType.AND)
+                .build();
+
+        assert(!Evaluator.evaluate(logic, 8000));
     }
 }
