@@ -25,6 +25,6 @@ public class ConnectedGroup<T>
 
     public String toString()
     {
-        return group.getName() + " --> " + getConnectorToPreviousGroup();
+        return getConnectorToPreviousGroup() + " " + group.getName();
     }
 }

@@ -83,7 +83,7 @@ public class Group<T>
 
         public Builder<T> addCheck(String name, Predicate<T> predicate)
         {
-            checks.add(new Check<T>(name, predicate));
+            checks.add(new Check<>(name, predicate));
             return this;
         }
 

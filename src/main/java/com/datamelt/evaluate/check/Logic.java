@@ -24,6 +24,33 @@ public class Logic<T>
         return groups;
     }
 
+    public String getGroupConnectionLogic()
+    {
+        StringBuilder groupConnectionLogic = new StringBuilder();
+        for(int i=0; i< groups.size()-1; i++)
+        {
+            groupConnectionLogic.append("(");
+        }
+        for(int i=0; i< groups.size(); i++)
+        {
+            ConnectedGroup<T> connectedGroup =groups.get(i);
+            if(i==0)
+            {
+                groupConnectionLogic.append(connectedGroup.getGroup().getName());
+            }
+            else
+            {
+                groupConnectionLogic.append(" ");
+                groupConnectionLogic.append(connectedGroup.getConnectorToPreviousGroup());
+                groupConnectionLogic.append(" ");
+                groupConnectionLogic.append(connectedGroup.getGroup().getName());
+                groupConnectionLogic.append(")");
+            }
+
+        }
+        return groupConnectionLogic.toString();
+    }
+
     public static class Builder<T>
     {
         private final List<ConnectedGroup<T>> groups = new ArrayList<>();
