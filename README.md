@@ -5,7 +5,13 @@ Library to construct logic to check values using flexible AND and OR conditions 
 Checks can be added to groups, where the checks are connected using an AND or an OR condition. Multiple groups can
 also be connected using an AND or an OR condition. This way one can create complex logic easily.
 
-The default connector between the checks of a group as well as for the connector between groups is AND.
+The default connector between the checks of a group as well as for the connector between groups is AND. Note that the connector
+between groups defines the connector type to the previous group. So if you have three groups where group2 is connected to group1 with
+an OR connector and group3 is connected to group2 with an AND connector, the following logic will be applied: 
+
+    ((result group1 OR result group2) AND result group3)
+
+So the result of group3 will be combined with the combined result of group1 and group2.
 
 Checks have a name plus the logic to apply to the data. The logic is a lambda expression which
 evaluates to a boolean true or false.
