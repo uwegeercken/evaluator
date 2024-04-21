@@ -1,50 +1,52 @@
-# logic
+# evaluator
 
 Library to construct logic to check values using flexible AND and OR conditions and grouping.
 
 Checks can be added to groups, where the checks are connected using an AND or an OR condition. Multiple groups can
 also be connected using an AND or an OR condition. This way one can create complex logic easily.
 
-The default for the connector between the checks of a group as well as the connector between multiple groups is AND.
+The default connector between the checks of a group as well as for the connector between groups is AND.
 
-Checks have a name and specify two fields plus the logic to apply to the fields. The logic is a lambda expression which
+Checks have a name plus the logic to apply to the data. The logic is a lambda expression which
 evaluates to a boolean true or false.
 
-Define the checks in a class which implements the LogicProvider interface, like this:
+Below is a String named testData representing multiple fields, all separated by a semicolon. Define the logic consisting of a group and it's
+checks like this:
 
-    LogicProvider<Row> logicProvider = new TestProvider();
+    String testData = "Charles;47;Frankfurt;Germany";
 
-"Row" in this sample is a class which implements a data row and its fields. The TestProvider class implements the
-LogicProvider Interface and the method "mapValues(...)". In this method the logic that is to be applied on the data
-is defined as well as the data values to be used.
+    Logic<String[]> logic = new Logic.Builder<String[]>()
+                .addGroup(new Group.Builder<String[]>("group1")
+                        .addCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
+                        .build())
+                .build();
 
-    @Override
-    public Logic mapValues(Row row)
-    {
-        return new Logic.Builder()
-            .addGroup(new Group.Builder("group1")
-                .connectingChecksUsing(ConnectorType.OR)
-                .addCheck(new Check<>("length smaller than", row.getStringValue("field-0"), row.getIntegerValue("field-1"),(f1, f2) -> f1.length() < f2))
-                .addCheck(new Check<>("equals", row.getIntegerValue("field-1"),row.getIntegerValue("field-2"),(f1, f2) -> Objects.equals(f1, f2)))
-            .build())
-            .addGroup(new Group.Builder("group2")
-                .addCheck(new Check<>("equals", 1, 1,(f1, f2) -> Objects.equals(f1, f2)))
-            .build())
-        .build();
-    }
+The logic and the group expect a string array as the type parameter. To test if the test data passes all checks (rules) simply call:
 
-Once the "mapValues(...)" method is defined, evaluate the defined logic/checks against the data:
+    boolean result = Evaluator.evaluate(logic, testData.split(";"))
 
-        boolean result = Evaluator.evaluate(logicProvider, row));
+You may use multiple groups. When adding a group to the logic you can specify the connection type (AND or OR) to the previous group. When adding
+checks to a group you can specify how the checks within the group are connected (AND or OR) using the connectingChecksUsing(...) method.
 
-You can - instead of a Row object shown above - e.g. use a line from a CSV file, split it into its fields and run the
-logic against these fields. You may also loop over e.g. all lines in a CSV file or records of a resultset from a database
-query and check the validity of the data using a defined logic.
+    Logic<String[]> logic = new Logic.Builder<String[]>()
+                .addGroup(new Group.Builder<String[]>("group1")
+                        .connectingChecksUsing(ConnectorType.OR)
+                        .addCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
+                        .addCheck("name equals", fieldArray ->  fieldArray[0].equals("Peter"))
+                        .build())
+                .addGroup(new Group.Builder<String[]>("group2")
+                    .addCheck("is greater", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
+                        .build(), ConnectorType.AND)
+                .build();
 
-Instead of defining lambda expressions over and over again, you could also put them in a different class or library and use them as
+Instead of using a string array like in the case above, you can use any other object that you want to test against a defined logic. Like
+e.g. a record from a SQL resultset or a row that contains all fields parsed from a CSV file. Using an object that represents a row of attributes
+or fields will allow you to compare fields against each other. Or you may check a field against a defined value.
+
+Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
 Using groups, the "and" or "or" connector between the individual checks, as well as the "and" or "or" between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets.
 
-last update: Uwe Geercken - 2024/04/08
+last update: Uwe Geercken - 2024/04/21
