@@ -1,5 +1,7 @@
 package com.datamelt.evaluate.utilities;
 
+import com.datamelt.evaluate.model.InvalidFieldReferenceException;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,38 +20,97 @@ public class Row
         return fields;
     }
 
-    public String getString(String name)
+    public String getString(String name) throws InvalidFieldReferenceException
     {
-        return (String) fields.get(name);
+        if(fields.containsKey(name))
+        {
+            return (String) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
     }
 
-    public Integer getInteger(String name)
+    public Integer getInteger(String name) throws InvalidFieldReferenceException
     {
-        return (Integer) fields.get(name);
+        if(fields.containsKey(name))
+        {
+            return (Integer) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
     }
 
-    public Long getLong(String name)
+    public Long getLong(String name) throws InvalidFieldReferenceException
     {
-        return (Long) fields.get(name);
+        if(fields.containsKey(name))
+        {
+            return (Long) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
     }
 
-    public Double getDouble(String name)
+    public Double getDouble(String name) throws InvalidFieldReferenceException
     {
-        return (Double) fields.get(name);
+        if(fields.containsKey(name))
+        {
+            return (Double) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
     }
 
-    public Float getFloat(String name) { return (Float) fields.get(name); }
+    public Float getFloat(String name) throws InvalidFieldReferenceException
+    {
+        if(fields.containsKey(name))
+        {
+            return (Float) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
+    }
 
-    public Boolean getBoolean(String name)
+    public Boolean getBoolean(String name) throws InvalidFieldReferenceException
     {
-        return (Boolean) fields.get(name);
+        if(fields.containsKey(name))
+        {
+            return (Boolean) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
     }
-    public BigDecimal getBigDecimal(String name)
+    public BigDecimal getBigDecimal(String name) throws InvalidFieldReferenceException
     {
-        return (BigDecimal) fields.get(name);
+        if(fields.containsKey(name))
+        {
+            return (BigDecimal) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
     }
-    public Date getDate(String name)
+    public Date getDate(String name) throws InvalidFieldReferenceException
     {
-        return (Date) fields.get(name);
+        if(fields.containsKey(name))
+        {
+            return (Date) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
     }
 }
