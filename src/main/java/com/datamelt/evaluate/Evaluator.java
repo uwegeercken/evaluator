@@ -18,11 +18,11 @@ public class Evaluator
 
         if(logic.getGroups().size()>1)
         {
-            logger.debug("evaluating logic {} - passed: [{}]", logic.getGroupConnectionLogic(), result);
+            logger.trace("evaluating logic {} - passed: [{}]", logic.getGroupConnectionLogic(), result);
         }
         else
         {
-            logger.debug("evaluating logic - passed: [{}]", result);
+            logger.trace("evaluating logic - passed: [{}]", result);
         }
         return result;
     }

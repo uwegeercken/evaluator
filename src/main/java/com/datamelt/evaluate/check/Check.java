@@ -25,7 +25,7 @@ public class Check<T>
     public boolean evaluate(T dataObject)
     {
         boolean result = check.test(dataObject);
-        logger.trace("checking value [{}] using check [{}] --> [{}]", dataObject.toString(), name, result);
+        logger.trace("evaluating check [{}] against value [{}], passed: [{}]", dataObject.toString(), name, result);
         return result;
     }
 
