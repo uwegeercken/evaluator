@@ -49,6 +49,8 @@ Instead of using a string array like in the case above, you can use any other ob
 e.g. a record from a SQL resultset or a row that contains all fields parsed from a CSV file. Using an object that represents a row of attributes
 or fields will allow you to compare fields against each other. Or you may check a field against a defined value.
 
+You may use the getGroupConnectionLogic() method to retrieve a string representation of the logic and how groups and checks are evaluated. 
+
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
