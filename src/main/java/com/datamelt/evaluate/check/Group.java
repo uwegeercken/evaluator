@@ -50,17 +50,16 @@ public class Group<T>
     {
         switch (connectorBetweenChecks)
         {
-            case AND ->
-            {
-                return results.stream()
-                        .reduce((result1, result2) -> result1 && result2);
-            }
             case OR ->
             {
                 return results.stream()
                         .reduce((result1, result2) -> result1 || result2);
             }
-            default -> throw new IllegalStateException("unexpected value for connector type: " + connectorBetweenChecks);
+            default ->
+            {
+                return results.stream()
+                        .reduce((result1, result2) -> result1 && result2);
+            }
         }
     }
 

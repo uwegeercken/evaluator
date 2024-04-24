@@ -60,7 +60,7 @@ public class Logic<T>
     {
         private final List<ConnectedGroup<T>> groups = new ArrayList<>();
 
-        public Builder<T> addGroup(Group<T> group, ConnectorType connectorToPreviousGroup)
+        public Builder<T> addGroup(Group<T> group, ConnectorType connectorToPreviousGroup) throws DuplicateElementException
         {
             if(getGroup(group.getName()).isPresent())
             {
