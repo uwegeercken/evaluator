@@ -36,17 +36,22 @@ public class Logic<T>
             ConnectedGroup<T> connectedGroup =groups.get(i);
             if(i==0)
             {
-                groupConnectionLogic.append(connectedGroup.getGroup().getName());
+                groupConnectionLogic.append(connectedGroup.getGroup().getName())
+                        .append(" [checks:")
+                        .append(connectedGroup.getGroup().getConnectorBetweenChecks())
+                        .append("]");
             }
             else
             {
-                groupConnectionLogic.append(" ");
-                groupConnectionLogic.append(connectedGroup.getConnectorToPreviousGroup());
-                groupConnectionLogic.append(" ");
-                groupConnectionLogic.append(connectedGroup.getGroup().getName());
-                groupConnectionLogic.append(")");
+                groupConnectionLogic.append(" ")
+                        .append(connectedGroup.getConnectorToPreviousGroup())
+                        .append(" ")
+                        .append(connectedGroup.getGroup().getName())
+                        .append(" [checks:")
+                        .append(connectedGroup.getGroup().getConnectorBetweenChecks())
+                        .append("]")
+                        .append(")");
             }
-
         }
         return groupConnectionLogic.toString();
     }

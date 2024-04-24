@@ -55,4 +55,4 @@ static variables.
 Using groups, the "and" or "or" connector between the individual checks, as well as the "and" or "or" between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets.
 
-last update: Uwe Geercken - 2024/04/21
+last update: Uwe Geercken - 2024/04/24

@@ -12,25 +12,10 @@ public class Evaluator
 
     public static <T> boolean evaluate(Logic<T> logic, T data)
     {
-        boolean result = logic.getGroups().stream()
+        return logic.getGroups().stream()
                 .map(connectedGroup -> new GroupEvaluationResult(connectedGroup.getGroup().evaluateChecks(data), connectedGroup.getConnectorToPreviousGroup()))
                 .reduce(GroupResultCombiner::combineResults).map(GroupEvaluationResult::getPassed).orElse(false);
 
-        if(logic.getGroups().size()>1)
-        {
-            logger.trace("evaluating logic {} - passed: [{}]", logic.getGroupConnectionLogic(), result);
-        }
-        else
-        {
-            logger.trace("evaluating logic - passed: [{}]", result);
-        }
-        return result;
+
     }
-
-
-    //    public boolean evaluate(String name)
-//    {
-//        return getGroup(name).orElseThrow().getGroup().evaluateChecks();
-//    }
-
 }
