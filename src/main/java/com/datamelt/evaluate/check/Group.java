@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Group<T>
 {
@@ -61,6 +62,14 @@ public class Group<T>
                         .reduce((result1, result2) -> result1 && result2);
             }
         }
+    }
+
+    public String getCheckConnectionLogic()
+    {
+        return getChecks()
+                .stream()
+                .map(Check::getName)
+                .collect(Collectors.joining(" " + getConnectorBetweenChecks().name() + " "));
     }
 
     public static class Builder<T>

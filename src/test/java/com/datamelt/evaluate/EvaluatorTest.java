@@ -20,9 +20,11 @@ class EvaluatorTest
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")
                         .addCheck("name equals", row -> row.getString("name").equals("Charles"))
+                        .addCheck("city equals", row -> row.getString("city").equals("Frankfurt"))
+                        .addCheck("country equals", row -> row.getString("country").equals("Germany"))
                         .build())
                 .addGroup(new Group.Builder<Row>("group2")
-                        .addCheck("is greater", row -> row.getInteger("age") > 18)
+                        .addCheck("age is greater", row -> row.getInteger("age") > 18)
                         .build(), ConnectorType.AND)
                 .build();
 
