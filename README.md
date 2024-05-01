@@ -11,7 +11,8 @@ an OR connector and group3 is connected to group2 with an AND connector, the fol
 
     ((result group1 OR result group2) AND result group3)
 
-So the result of group3 will be combined with the combined result of group1 and group2.
+So the result of group3 will be combined with the combined result of group1 and group2. You can retrieve a description of the connection logic using
+the logic class method getGroupConnectionLogic().
 
 Checks have a name plus the logic to apply to the data. The logic is a lambda expression which
 evaluates to a boolean true or false.
@@ -19,7 +20,8 @@ evaluates to a boolean true or false.
 Below is a String named testData representing multiple fields, all separated by a semicolon. Define the logic consisting of a group and it's
 checks like this:
 
-    String testData = "Charles;47;Frankfurt;Germany";
+    // testData fields: Name,Age,City,Country, Shoesize
+    String testData = "Charles;47;Frankfurt;Germany,48";
 
     Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
@@ -36,14 +38,17 @@ checks to a group you can specify how the checks within the group are connected 
 
     Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
-                        .connectingChecksUsing(ConnectorType.OR)
-                        .addCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
-                        .addCheck("name equals", fieldArray ->  fieldArray[0].equals("Peter"))
-                        .build())
+                    .connectingChecksUsing(ConnectorType.OR)
+                    .addCheck("it's Charles", fieldArray ->  fieldArray[0].equals("Charles"))
+                    .addCheck("it's Peter", fieldArray ->  fieldArray[0].equals("Peter"))
+                    .build())
                 .addGroup(new Group.Builder<String[]>("group2")
-                    .addCheck("is greater", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
-                        .build(), ConnectorType.AND)
-                .build();
+                    .addCheck("is grown up", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
+                    .build(), ConnectorType.AND)
+                .addGroup(new Group.Builder<String[]>("group2")
+                    .addCheck("with big shoesize", fieldArray ->  Integer.parseInt(fieldArray[4]) > 44)
+                    .build(), ConnectorType.OR)
+            .build();
 
 Instead of using a string array like in the case above, you can use any other object that you want to test against a defined logic. Like
 e.g. a record from a SQL resultset or a row that contains all fields parsed from a CSV file. Using an object that represents a row of attributes
@@ -57,4 +62,4 @@ static variables.
 Using groups, the "and" or "or" connector between the individual checks, as well as the "and" or "or" between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets.
 
-last update: Uwe Geercken - 2024/04/24
+last update: Uwe Geercken - 2024/05/01
