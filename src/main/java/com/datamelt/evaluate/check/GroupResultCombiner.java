@@ -14,6 +14,14 @@ public class GroupResultCombiner
             {
                 return new GroupEvaluationResult(groupEvaluationResult2.getPassed() || groupEvaluationResult1.getPassed(), groupEvaluationResult2.getConnectorType());
             }
+            case NOT ->
+            {
+                return new GroupEvaluationResult(!(groupEvaluationResult2.getPassed() && groupEvaluationResult1.getPassed()), groupEvaluationResult2.getConnectorType());
+            }
+            case NOR ->
+            {
+                return new GroupEvaluationResult(!(groupEvaluationResult2.getPassed() || groupEvaluationResult1.getPassed()), groupEvaluationResult2.getConnectorType());
+            }
             default -> throw new IllegalStateException("unexpected value: " + groupEvaluationResult2.getConnectorType());
         }
     }

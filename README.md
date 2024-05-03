@@ -1,9 +1,12 @@
 # evaluator
 
-Library to construct logic to check values using flexible AND and OR conditions and grouping.
+Library to construct logic to check values using flexible conditions and grouping using AND, OR, NOT or NOR.
 
-Checks can be added to groups, where the checks are connected using an AND or an OR condition. Multiple groups can
-also be connected using an AND or an OR condition. This way one can create complex logic easily.
+Checks can be added to groups, where the checks are connected using also AND, OR, NOT, NOR. Multiple groups can
+also be connected using AND, OR, NOT, NOR. This way one can create complex logic easily.
+
+Groups and their checks are like a unit of tests or filters using the specified connection logic between the checks. And
+by connecting groups to each other the single group logic is combined to a more complex structure.
 
 The default connector between the checks of a group as well as for the connector between groups is AND. Note that the connector
 between groups defines the connector type to the previous group. So if you have three groups where group2 is connected to group1 with
@@ -14,8 +17,16 @@ an OR connector and group3 is connected to group2 with an AND connector, the fol
 So the result of group3 will be combined with the combined result of group1 and group2. You can retrieve a description of the connection logic using
 the logic class method getGroupConnectionLogic().
 
-Checks have a name plus the logic to apply to the data. The logic is a lambda expression which
-evaluates to a boolean true or false.
+
+
+If you connect multiple checks with an AND condition, then all must evaluate to "true" so that the overall result is "true".
+If you connect multiple checks with an OR condition, then at least one must evaluate to "true" so that the overall result is "true".
+If you connect multiple checks with an NOR condition, then all must evaluate to "false" so that the overall result is "true".
+If you connect multiple checks with an NOT condition, then at least one must evaluate to "false" so that the overall result is "true".
+
+For the groups it is the same principle but remember, that a group is connected to the result of the previous group(s) - as explained above. 
+
+Checks have a name plus the logic to apply to the data. The logic is a lambda expression which evaluates to a boolean true or false (a predicate).
 
 Below is a String named testData representing multiple fields, all separated by a semicolon. Define the logic consisting of a group and it's
 checks like this:
@@ -33,8 +44,8 @@ The logic and the group expect a string array as the type parameter. To test if 
 
     boolean result = Evaluator.evaluate(logic, testData.split(";"))
 
-You may use multiple groups. When adding a group to the logic you can specify the connection type (AND or OR) to the previous group. When adding
-checks to a group you can specify how the checks within the group are connected (AND or OR) using the connectingChecksUsing(...) method.
+You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group - default is AND. When adding
+checks to a group you can specify how the checks within the group are connected (AND, OR, NOT, NOR) using the connectingChecksUsing(...) method - default is AND.
 
     Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
@@ -50,6 +61,8 @@ checks to a group you can specify how the checks within the group are connected 
                     .build(), ConnectorType.OR)
             .build();
 
+If you don't define any checks in a group the result will evaluate to "false". If you don't add any groups to a logic object then the result will evaluate also to "false".
+
 Instead of using a string array like in the case above, you can use any other object that you want to test against a defined logic. Like
 e.g. a record from a SQL resultset or a row that contains all fields parsed from a CSV file. Using an object that represents a row of attributes
 or fields will allow you to compare fields against each other. Or you may check a field against a defined value.
@@ -59,7 +72,7 @@ You may use the getGroupConnectionLogic() method to retrieve a string representa
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
-Using groups, the "and" or "or" connector between the individual checks, as well as the "and" or "or" between the different groups
-you can build very complex logic in a simple way without the need to use lots of brackets.
+Using groups, the AND, OR, NOT, NOR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
+you can build very complex logic in a simple way without the need to use lots of brackets or complicated designs with if statements.
 
-last update: Uwe Geercken - 2024/05/01
+last update: Uwe Geercken - 2024/05/04

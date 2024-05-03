@@ -42,24 +42,36 @@ public class Group<T>
                 .map(check -> check.evaluate(dataObject))
                 .toList();
 
-        boolean combinedChecksResults = getCombinedChecksResults(results).orElse(false);
+        boolean combinedChecksResults = getCombinedChecksResults(results);
         logger.trace("group [{}] using connector between checks [{}], result [{}]", name, connectorBetweenChecks, combinedChecksResults);
         return combinedChecksResults;
     }
 
-    private Optional<Boolean> getCombinedChecksResults(List<Boolean> results)
+    private boolean getCombinedChecksResults(List<Boolean> results)
     {
         switch (connectorBetweenChecks)
         {
             case OR ->
             {
                 return results.stream()
-                        .reduce((result1, result2) -> result1 || result2);
+                        .reduce((result1, result2) -> result1 || result2).orElse(false);
+            }
+            case NOR ->
+            {
+                boolean result =  results.stream()
+                        .reduce((result1, result2) -> (result1 || result2)).orElse(true);
+                return !result;
+            }
+            case NOT ->
+            {
+                boolean result = results.stream()
+                        .reduce((result1, result2) -> (result1 && result2)).orElse(true);
+                return !result;
             }
             default ->
             {
                 return results.stream()
-                        .reduce((result1, result2) -> result1 && result2);
+                        .reduce((result1, result2) -> result1 && result2).orElse(false);
             }
         }
     }
