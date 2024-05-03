@@ -11,11 +11,12 @@ class EvaluatorTest
     @Test
     public void testLogicPassedUsingSingleRowObject()
     {
-        Row testRow  = new Row();
-        testRow.addField("name", "Charles");
-        testRow.addField("age", 47);
-        testRow.addField("city", "Frankfurt");
-        testRow.addField("country", "Germany");
+        Row testRow  = new Row.Builder()
+            .addField("name", "Charles")
+            .addField("age", 47)
+            .addField("city", "Frankfurt")
+            .addField("country", "Germany")
+            .build();
 
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")

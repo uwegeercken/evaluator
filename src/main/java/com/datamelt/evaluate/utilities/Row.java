@@ -9,10 +9,11 @@ import java.util.Map;
 
 public class Row
 {
-    private final Map<String, Object> fields = new HashMap<>();
-    public void addField(String name, Object value)
+    private final Map<String, Object> fields;
+
+    private Row(Builder builder)
     {
-        fields.put(name, value);
+        this.fields = builder.fields;
     }
 
     public Map<String, Object> getFields()
@@ -111,6 +112,22 @@ public class Row
         else
         {
             throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
+    }
+
+    public static class Builder
+    {
+        private final Map<String, Object> fields = new HashMap<>();
+
+        public Builder addField(String name, Object value)
+        {
+            fields.put(name, value);
+            return this;
+        }
+
+        public Row build()
+        {
+            return new Row(this);
         }
     }
 }
