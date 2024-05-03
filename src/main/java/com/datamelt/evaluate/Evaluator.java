@@ -15,7 +15,5 @@ public class Evaluator
         return logic.getGroups().stream()
                 .map(connectedGroup -> new GroupEvaluationResult(connectedGroup.getGroup().evaluateChecks(data), connectedGroup.getConnectorToPreviousGroup()))
                 .reduce(GroupResultCombiner::combineResults).map(GroupEvaluationResult::getPassed).orElse(false);
-
-
     }
 }

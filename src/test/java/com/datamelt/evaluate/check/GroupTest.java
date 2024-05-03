@@ -2,9 +2,13 @@ package com.datamelt.evaluate.check;
 
 import com.datamelt.evaluate.Evaluator;
 import com.datamelt.evaluate.model.ConnectorType;
+import com.datamelt.evaluate.model.DuplicateElementException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GroupTest
 {
@@ -65,7 +69,6 @@ public class GroupTest
                         .addCheck("is greater", value -> value < 7500)
                         .build(), ConnectorType.AND)
                 .build();
-
         assert(Evaluator.evaluate(logic, 6000));
     }
 
@@ -85,5 +88,41 @@ public class GroupTest
                 .build();
 
         assert(!Evaluator.evaluate(logic, 8000));
+    }
+
+    @Test
+    public void testTwoGroupsSameNameFailed()
+    {
+        Exception exception = assertThrows(DuplicateElementException.class, () -> {
+            Logic<Integer> logic = new Logic.Builder<Integer>()
+                    .addGroup(new Group.Builder<Integer>("group1")
+                            .build())
+                    .addGroup(new Group.Builder<Integer>("group1")
+                            .build())
+                    .build();
+        });
+
+        String expectedMessage = "group with same name [group1] was already added";
+        assertEquals(exception.getMessage(), expectedMessage);
+    }
+
+    @Test
+    public void testNoGroupFailed()
+    {
+        Logic<Integer> logic = new Logic.Builder<Integer>()
+                .build();
+
+        assert(!Evaluator.evaluate(logic, -999));
+    }
+
+    @Test
+    public void testGroupNoChecksFailed()
+    {
+        Logic<Integer> logic = new Logic.Builder<Integer>()
+                .addGroup(new Group.Builder<Integer>("group1")
+                    .build())
+                .build();
+
+        assert(!Evaluator.evaluate(logic, -1));
     }
 }
