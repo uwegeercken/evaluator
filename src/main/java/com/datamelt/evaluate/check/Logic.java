@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Logic<T>
@@ -22,6 +23,14 @@ public class Logic<T>
     public List<ConnectedGroup<T>> getGroups()
     {
         return groups;
+    }
+
+    public Group<T> getGroup(String name)
+    {
+        return groups.stream()
+                .filter(connectedGroup -> connectedGroup.getGroup().getName().equals(name))
+                .map(ConnectedGroup::getGroup)
+                .findAny().orElseThrow(()-> new RuntimeException("the specified group [" + name + "] was not found"));
     }
 
     public String getGroupConnectionLogic()

@@ -5,6 +5,7 @@ import com.datamelt.evaluate.model.ConnectorType;
 import com.datamelt.evaluate.model.DuplicateElementException;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -158,6 +159,7 @@ public class GroupTest
                         .build(), ConnectorType.NOR)
                 .build();
 
+        List<String> results = logic.getGroup("group100").test(8000, CheckResultFilterType.ALL);
         assert(Evaluator.evaluate(logic, 8000));
     }
 

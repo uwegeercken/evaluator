@@ -42,10 +42,8 @@ The logic and the group expect a string array as the type parameter. To test if 
 
     boolean result = Evaluator.evaluate(logic, testData.split(";"))
 
-The static "evaluate" method returns true if the provided data passes the defined logic and returns false if not. There is also a method
-available to evaluate a single group.
-
-You can process a list of data objects easily by repeatedly calling
+The static "evaluate" method returns true if the provided data passes the defined logic and returns false if not. You can process a list of data objects easily by repeatedly calling this method.
+There is also a method available to evaluate a single group.
 
 You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group - default is AND. When adding
 checks to a group you can specify how the checks within the group are connected (AND, OR, NOT, NOR) using the connectingChecksUsing(...) method - default is AND.
@@ -74,6 +72,17 @@ You may use the getGroupConnectionLogic() method to retrieve a string representa
 
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
+
+The Evaluator object also provides test methods. Pass either a group or a logic object and a filter type to receive a verbal description
+for those checks which failed, those which passed or for all checks - depending on the selected filter type.
+
+To test a group:
+
+    List<String> results = logic.getGroup("group1").test(testData.split(";"), CheckResultFilterType.FAILED_ONLY);
+
+To test a complete logic (returns a map of group names and their list of results):
+
+    Map<String,List<String>> tests = Evaluator.test(logic, testData.split(";"), CheckResultFilterType.ALL);
 
 Using groups, the AND, OR, NOT, NOR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets or complicated designs with if statements.

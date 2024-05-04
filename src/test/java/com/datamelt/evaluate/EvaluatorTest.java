@@ -1,5 +1,6 @@
 package com.datamelt.evaluate;
 
+import com.datamelt.evaluate.check.CheckResultFilterType;
 import com.datamelt.evaluate.check.Group;
 import com.datamelt.evaluate.check.Logic;
 import com.datamelt.evaluate.model.ConnectorType;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 class EvaluatorTest
 {
@@ -67,6 +69,8 @@ class EvaluatorTest
                         .addCheck("age at or above 20", row -> row.getInteger("age") >= 20)
                         .build(), ConnectorType.AND)
                 .build();
+
+        Map<String,List<String>> tests = Evaluator.test(logic, testRow1, CheckResultFilterType.ALL);
 
         boolean totalResult = rows.stream()
                 .map(row -> Evaluator.evaluate(logic, row))

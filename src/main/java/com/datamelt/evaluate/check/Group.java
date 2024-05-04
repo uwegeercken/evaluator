@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -38,39 +37,56 @@ public class Group<T>
 
     public boolean evaluateChecks(T dataObject)
     {
-        List<Boolean> results = checks.stream()
-                .map(check -> check.evaluate(dataObject))
-                .toList();
+        List<CheckResult<T>> results = getCheckResults(dataObject);
 
         boolean combinedChecksResults = getCombinedChecksResults(results);
         logger.trace("group [{}] using connector between checks [{}], result [{}]", name, connectorBetweenChecks, combinedChecksResults);
         return combinedChecksResults;
     }
 
-    private boolean getCombinedChecksResults(List<Boolean> results)
+    private List<CheckResult<T>> getCheckResults(T dataObject)
+    {
+        return checks.stream()
+                .map(check -> new CheckResult<>(check, check.evaluate(dataObject)))
+                .toList();
+    }
+
+    public List<String> test(T dataObject, CheckResultFilterType filterType)
+    {
+        return getCheckResults(dataObject).stream()
+                .filter(CheckResultFilterType.getFilter(filterType))
+                .map(CheckResult::toString)
+                .toList();
+    }
+
+    private boolean getCombinedChecksResults(List<CheckResult<T>> results)
     {
         switch (connectorBetweenChecks)
         {
             case OR ->
             {
                 return results.stream()
+                        .map(CheckResult::getResult)
                         .reduce((result1, result2) -> result1 || result2).orElse(false);
             }
             case NOR ->
             {
                 boolean result =  results.stream()
+                        .map(CheckResult::getResult)
                         .reduce((result1, result2) -> (result1 || result2)).orElse(true);
                 return !result;
             }
             case NOT ->
             {
                 boolean result = results.stream()
+                        .map(CheckResult::getResult)
                         .reduce((result1, result2) -> (result1 && result2)).orElse(true);
                 return !result;
             }
             default ->
             {
                 return results.stream()
+                        .map(CheckResult::getResult)
                         .reduce((result1, result2) -> result1 && result2).orElse(false);
             }
         }
