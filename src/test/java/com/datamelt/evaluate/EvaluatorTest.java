@@ -70,8 +70,6 @@ class EvaluatorTest
                         .build(), ConnectorType.AND)
                 .build();
 
-        Map<String,List<String>> tests = Evaluator.test(logic, testRow1, CheckResultFilterType.ALL);
-
         boolean totalResult = rows.stream()
                 .map(row -> Evaluator.evaluate(logic, row))
                 .allMatch(evaluationResult -> evaluationResult);

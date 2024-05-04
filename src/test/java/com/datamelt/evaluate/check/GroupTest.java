@@ -159,7 +159,6 @@ public class GroupTest
                         .build(), ConnectorType.NOR)
                 .build();
 
-        List<String> results = logic.getGroup("group100").test(8000, CheckResultFilterType.ALL);
         assert(Evaluator.evaluate(logic, 8000));
     }
 
