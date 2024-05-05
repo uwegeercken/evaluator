@@ -1,29 +1,29 @@
 package com.datamelt.evaluate.check;
 
-public class CheckResult<T>
+public class CheckResult
 {
-    private final Check<T> check;
-    private final boolean result;
+    private final String name;
+    private final boolean passed;
 
-    public CheckResult(Check<T> check, boolean result)
+    public CheckResult(String name, boolean passed)
     {
-        this.check = check;
-        this.result = result;
+        this.name = name;
+        this.passed = passed;
     }
 
-    public Check<T> getCheck()
+    public String getName()
     {
-        return check;
+        return name;
     }
 
-    public boolean getResult()
+    public boolean passed()
     {
-        return result;
+        return passed;
     }
 
     @Override
     public String toString()
     {
-        return "check: [" + check.getName() + "] - passed: " + result;
+        return "check: [" + name + "] - passed: " + passed;
     }
 }

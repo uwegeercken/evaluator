@@ -1,6 +1,5 @@
 package com.datamelt.evaluate.check;
 
-import com.datamelt.evaluate.Evaluator;
 import com.datamelt.evaluate.model.DuplicateElementException;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +19,7 @@ public class GroupTest
                 .build();
         GroupResult<Integer> groupResult = new GroupResult<>(group1,200);
 
-        assert(new GroupResult<>(group1,200).getPassed());
+        assert(new GroupResult<>(group1,200).passed());
     }
 
     @Test
@@ -30,7 +29,7 @@ public class GroupTest
                 .withCheck("is greater", value -> value.length() > 1000)
                 .withCheck("equals", value -> value.equals("hello"))
                 .build();
-        assert(!new GroupResult<>(group1,"Alibaba").getPassed());
+        assert(!new GroupResult<>(group1,"Alibaba").passed());
     }
 
     @Test
@@ -41,7 +40,7 @@ public class GroupTest
                 .withCheck("is greater", value -> value > 1000)
                 .withCheck("equals", value -> value==333)
                 .build();
-        assert(new GroupResult<>(group1,333L).getPassed());
+        assert(new GroupResult<>(group1,333L).passed());
 
     }
 
@@ -53,7 +52,7 @@ public class GroupTest
                 .withCheck("is greater", value -> value > 10000)
                 .withCheck("equals", value -> value == 1)
                 .build();
-        assert(!new GroupResult<>(group1,9999).getPassed());
+        assert(!new GroupResult<>(group1,9999).passed());
     }
 
     @Test
@@ -66,7 +65,7 @@ public class GroupTest
                 .withCheck("equals", value -> Objects.equals(value, 400)) // false
                 .withCheck("equals", value -> Objects.equals(value, 5000)) // false
                 .build();
-        assert(new GroupResult<>(group1,200).getPassed());
+        assert(new GroupResult<>(group1,200).passed());
     }
 
     @Test
@@ -79,7 +78,7 @@ public class GroupTest
                 .withCheck("equals", value -> Objects.equals(value, 400)) // false
                 .withCheck("equals", value -> Objects.equals(value, 5000)) // false
                 .build();
-        assert(!new GroupResult<>(group1,200).getPassed());
+        assert(!new GroupResult<>(group1,200).passed());
     }
 
     @Test
@@ -92,7 +91,7 @@ public class GroupTest
                 .withCheck("equals", value -> Objects.equals(value, 200)) // false
                 .withCheck("equals", value -> Objects.equals(value, 5000)) // false
                 .build();
-        assert(new GroupResult<>(group1,200).getPassed());
+        assert(new GroupResult<>(group1,200).passed());
     }
 
     @Test
@@ -105,7 +104,7 @@ public class GroupTest
                 .withCheck("equals", value -> Objects.equals(value, 200)) // false
                 .withCheck("equals", value -> Objects.equals(value, 200)) // false
                 .build();
-        assert(!new GroupResult<>(group1,200).getPassed());
+        assert(!new GroupResult<>(group1,200).passed());
     }
 
     @Test
@@ -124,7 +123,9 @@ public class GroupTest
                         .connectingToPreviousGroupUsing(ConnectorType.AND)
                         .build())
                 .build();
-        assert(Evaluator.evaluate(logic, 6000).getPassed());
+
+        EvaluationResult<Integer> result = logic.evaluate(6000);
+        assert(logic.evaluate(6000).passed());
     }
 
     @Test
@@ -144,7 +145,7 @@ public class GroupTest
                         .build())
                 .build();
 
-        assert(!Evaluator.evaluate(logic, 8000).getPassed());
+        assert(!logic.evaluate(8000).passed());
     }
 
     @Test
@@ -165,8 +166,7 @@ public class GroupTest
                         .build())
                 .build();
 
-        EvaluationResult<Integer> evaluationResult = Evaluator.evaluate(logic, 8000);
-        assert(Evaluator.evaluate(logic, 8000).getPassed());
+        assert(logic.evaluate(8000).passed());
     }
 
     @Test
@@ -187,7 +187,7 @@ public class GroupTest
                         .build())
                 .build();
 
-        assert(!Evaluator.evaluate(logic, 8000).getPassed());
+        assert(!logic.evaluate(8000).passed());
     }
 
     @Test
@@ -208,7 +208,7 @@ public class GroupTest
                         .build())
                 .build();
 
-        assert(Evaluator.evaluate(logic, 8000).getPassed());
+        assert(logic.evaluate(8000).passed());
     }
 
     @Test
@@ -229,7 +229,7 @@ public class GroupTest
                         .build())
                 .build();
 
-        assert(!Evaluator.evaluate(logic, 8000).getPassed());
+        assert(!logic.evaluate(8000).passed());
     }
 
     @Test
@@ -250,7 +250,7 @@ public class GroupTest
                         .build())
                 .build();
 
-        assert(Evaluator.evaluate(logic, 8000).getPassed());
+        assert(logic.evaluate(8000).passed());
     }
 
     @Test
@@ -275,7 +275,7 @@ public class GroupTest
         Logic<Integer> logic = new Logic.Builder<Integer>()
                 .build();
 
-        assert(!Evaluator.evaluate(logic, -999).getPassed());
+        assert(!logic.evaluate(-999).passed());
     }
 
     @Test
@@ -286,6 +286,6 @@ public class GroupTest
                     .build())
                 .build();
 
-        assert(!Evaluator.evaluate(logic, -1).getPassed());
+        assert(!logic.evaluate(-1).passed());
     }
 }

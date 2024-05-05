@@ -17,12 +17,12 @@ public class EvaluationResult<T>
         return groupResults;
     }
 
-    public boolean getPassed()
+    public boolean passed()
     {
         boolean result = false;
         if(!groupResults.isEmpty())
         {
-            result = groupResults.get(0).getPassed();
+            result = groupResults.get(0).passed();
             for (int i = 1; i < groupResults.size(); i++)
             {
                 result = combineResults(result, groupResults.get(i));
@@ -37,19 +37,19 @@ public class EvaluationResult<T>
         {
             case AND ->
             {
-                return groupResult2.getPassed() && groupResult1;
+                return groupResult2.passed() && groupResult1;
             }
             case OR ->
             {
-                return groupResult2.getPassed() || groupResult1;
+                return groupResult2.passed() || groupResult1;
             }
             case NOT ->
             {
-                return !(groupResult2.getPassed() && groupResult1);
+                return !(groupResult2.passed() && groupResult1);
             }
             case NOR ->
             {
-                return !(groupResult2.getPassed() || groupResult1);
+                return !(groupResult2.passed() || groupResult1);
             }
             default -> throw new IllegalStateException("unexpected value: " + groupResult2.getConnectorToPreviousGroup());
         }

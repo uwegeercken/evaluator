@@ -42,10 +42,10 @@ public class Group<T>
 
     public List<Check<T>> getChecks() { return checks; }
 
-    public List<CheckResult<T>> getCheckResults(T dataObject)
+    public List<CheckResult> getCheckResults(T dataObject)
     {
         return checks.stream()
-                .map(check -> new CheckResult<>(check, check.evaluate(dataObject)))
+                .map(check -> new CheckResult(check.getName(), check.evaluate(dataObject)))
                 .toList();
     }
 

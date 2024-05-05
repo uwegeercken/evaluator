@@ -8,15 +8,15 @@ public enum CheckResultFilterType
     FAILED_ONLY,
     ALL;
 
-    public static Predicate<CheckResult<?>> getFilter(CheckResultFilterType filter)
+    public static Predicate<CheckResult> getFilter(CheckResultFilterType filter)
     {
         if(filter == PASSED_ONLY)
         {
-            return CheckResult::getResult;
+            return CheckResult::passed;
         }
         else if(filter == FAILED_ONLY)
         {
-            return checkResult -> !checkResult.getResult();
+            return checkResult -> !checkResult.passed();
         }
         else
         {

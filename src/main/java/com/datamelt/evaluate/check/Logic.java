@@ -1,8 +1,6 @@
 package com.datamelt.evaluate.check;
 
 import com.datamelt.evaluate.model.DuplicateElementException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Optional;
 
 public class Logic<T>
 {
-    private static final Logger logger = LoggerFactory.getLogger(Logic.class);
     private final List<Group<T>> groups;
 
     private Logic(Builder<T> builder)
@@ -30,6 +27,16 @@ public class Logic<T>
                 .findAny().orElseThrow(()-> new RuntimeException("the specified group [" + name + "] was not found"));
     }
 
+    public EvaluationResult<T> evaluate(T data)
+    {
+        EvaluationResult<T> evaluationResult = new EvaluationResult<>();
+        for(Group<T> group : getGroups())
+        {
+            evaluationResult.addGroupResult(new GroupResult<>(group, data));
+        }
+        return evaluationResult;
+    }
+
     public String getGroupConnectionLogic()
     {
         StringBuilder groupConnectionLogic = new StringBuilder();
@@ -37,6 +44,7 @@ public class Logic<T>
         {
             groupConnectionLogic.append("(");
         }
+
         for(int i=0; i< groups.size(); i++)
         {
             if(i==0)

@@ -1,16 +1,12 @@
-package com.datamelt.evaluate;
+package com.datamelt.evaluate.check;
 
-import com.datamelt.evaluate.check.ConnectorType;
-import com.datamelt.evaluate.check.EvaluationResult;
-import com.datamelt.evaluate.check.Group;
-import com.datamelt.evaluate.check.Logic;
 import com.datamelt.evaluate.utilities.Row;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class EvaluatorTest
+class LogicTest
 {
     @Test
     public void testLogicPassedUsingSingleRowObject()
@@ -34,8 +30,8 @@ class EvaluatorTest
                         .build())
                 .build();
 
-        EvaluationResult<Row> evaluationResult = Evaluator.evaluate(logic,testRow);
-        assert(Evaluator.evaluate(logic,testRow).getPassed());
+        EvaluationResult<Row> evaluationResult = logic.evaluate(testRow);
+        assert(logic.evaluate(testRow).passed());
     }
 
     @Test
@@ -73,8 +69,8 @@ class EvaluatorTest
                 .build();
 
         boolean totalResult = rows.stream()
-                .map(row -> Evaluator.evaluate(logic, row))
-                .allMatch(evaluationResult -> evaluationResult.getPassed());
+                .map(logic::evaluate)
+                .allMatch(EvaluationResult::passed);
 
         assert(totalResult);
     }
@@ -94,6 +90,6 @@ class EvaluatorTest
                         .build())
                 .build();
 
-        assert(Evaluator.evaluate(logic,testData.split(";")).getPassed());
+        assert(logic.evaluate(testData.split(";")).passed());
     }
 }

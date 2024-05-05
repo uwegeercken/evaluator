@@ -40,9 +40,9 @@ checks like this:
 
 The logic object and the group object expect a string array as the type parameter. To test if the test data passes all checks (rules) simply call:
 
-    boolean result = Evaluator.evaluate(logic, testData.split(";"))
+    EvaluationResult<String[]> result = logic.evaluate(testData.split(";"))
 
-The static "evaluate" method returns an EvaluationResult. It contains the results of all checks and groups. the getPassed method returns true if the provided data passes the defined logic and returns false if not.
+The static "evaluate" method returns an EvaluationResult. It contains the results of all checks and groups. the passed method returns true if the provided data passes the defined logic and returns false if not.
 You can process a list of data objects easily by repeatedly calling this method.
 
 You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group using the connectingToPreviousGroupUsing method - default is AND. When adding
