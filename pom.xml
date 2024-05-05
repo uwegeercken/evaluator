@@ -6,7 +6,7 @@
 
     <groupId>com.datamelt</groupId>
     <artifactId>evaluator</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -85,7 +85,7 @@
                             <Class-Path>.</Class-Path>
                         </manifestEntries>
                     </archive>
-                    <finalName>evaluator/${project.artifactId}-${project.version}/${project.artifactId}</finalName>
+                    <finalName>evaluator/${project.artifactId}-${project.version}/${project.artifactId}-${project.version}</finalName>
                 </configuration>
             </plugin>
         </plugins>

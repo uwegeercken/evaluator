@@ -1,4 +1,4 @@
-package com.datamelt.evaluate.model;
+package com.datamelt.evaluate.check;
 
 public enum ConnectorType
 {

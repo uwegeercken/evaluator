@@ -1,26 +1,24 @@
 package com.datamelt.evaluate.check;
 
-import com.datamelt.evaluate.model.ConnectorType;
 import com.datamelt.evaluate.model.DuplicateElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class Logic<T>
 {
     private static final Logger logger = LoggerFactory.getLogger(Logic.class);
-    private final List<ConnectedGroup<T>> groups;
+    private final List<Group<T>> groups;
 
     private Logic(Builder<T> builder)
     {
         this.groups = builder.groups;
     }
 
-    public List<ConnectedGroup<T>> getGroups()
+    public List<Group<T>> getGroups()
     {
         return groups;
     }
@@ -28,8 +26,7 @@ public class Logic<T>
     public Group<T> getGroup(String name)
     {
         return groups.stream()
-                .filter(connectedGroup -> connectedGroup.getGroup().getName().equals(name))
-                .map(ConnectedGroup::getGroup)
+                .filter(group -> group.getName().equals(name))
                 .findAny().orElseThrow(()-> new RuntimeException("the specified group [" + name + "] was not found"));
     }
 
@@ -42,24 +39,23 @@ public class Logic<T>
         }
         for(int i=0; i< groups.size(); i++)
         {
-            ConnectedGroup<T> connectedGroup =groups.get(i);
             if(i==0)
             {
                 groupConnectionLogic
-                        .append(connectedGroup.getGroup().getName())
+                        .append(groups.get(i).getName())
                         .append(" [")
-                        .append(connectedGroup.getGroup().getCheckConnectionLogic())
+                        .append(groups.get(i).getCheckConnectionLogic())
                         .append("]");
             }
             else
             {
                 groupConnectionLogic
                         .append(" ")
-                        .append(connectedGroup.getConnectorToPreviousGroup())
+                        .append(groups.get(i).getConnectorTypePreviousGroup())
                         .append(" ")
-                        .append(connectedGroup.getGroup().getName())
+                        .append(groups.get(i).getName())
                         .append(" [")
-                        .append(connectedGroup.getGroup().getCheckConnectionLogic())
+                        .append(groups.get(i).getCheckConnectionLogic())
                         .append("]")
                         .append(")");
             }
@@ -69,9 +65,9 @@ public class Logic<T>
 
     public static class Builder<T>
     {
-        private final List<ConnectedGroup<T>> groups = new ArrayList<>();
+        private final List<Group<T>> groups = new ArrayList<>();
 
-        public Builder<T> addGroup(Group<T> group, ConnectorType connectorToPreviousGroup) throws DuplicateElementException
+        public Builder<T> addGroup(Group<T> group) throws DuplicateElementException
         {
             if(getGroup(group.getName()).isPresent())
             {
@@ -79,14 +75,8 @@ public class Logic<T>
             }
             else
             {
-                groups.add(new ConnectedGroup<>(group, connectorToPreviousGroup));
+                groups.add(group);
             }
-            return this;
-        }
-
-        public Builder<T> addGroup(Group<T> group)
-        {
-            addGroup(group, ConnectorType.AND);
             return this;
         }
 
@@ -95,10 +85,10 @@ public class Logic<T>
             return new Logic<>(this);
         }
 
-        private Optional<ConnectedGroup<T>> getGroup(String name)
+        private Optional<Group<T>> getGroup(String name)
         {
             return groups.stream()
-                    .filter(group -> group.getGroup().getName().equals(name))
+                    .filter(group -> group.getName().equals(name))
                     .findFirst();
         }
     }

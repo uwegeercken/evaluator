@@ -1,15 +1,14 @@
 package com.datamelt.evaluate;
 
-import com.datamelt.evaluate.check.CheckResultFilterType;
 import com.datamelt.evaluate.check.Group;
 import com.datamelt.evaluate.check.Logic;
-import com.datamelt.evaluate.model.ConnectorType;
+import com.datamelt.evaluate.check.LogicResult;
+import com.datamelt.evaluate.check.ConnectorType;
 import com.datamelt.evaluate.utilities.Row;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 class EvaluatorTest
 {
@@ -26,15 +25,17 @@ class EvaluatorTest
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")
                         .connectingChecksUsing(ConnectorType.OR)
-                        .addCheck("it's Charles", row -> row.getString("name").equals("Charles"))
-                        .addCheck("it's Peter", row -> row.getString("name").equals("Peter"))
+                        .withCheck("it's Charles", row -> row.getString("name").equals("Charles"))
+                        .withCheck("it's Peter", row -> row.getString("name").equals("Peter"))
                         .build())
                 .addGroup(new Group.Builder<Row>("group2")
-                        .addCheck("living in Germany", row -> row.getString("country").equalsIgnoreCase("germany"))
-                        .build(), ConnectorType.AND)
+                        .withCheck("living in Germany", row -> row.getString("country").equalsIgnoreCase("germany"))
+                        .connectingToPreviousGroupUsing(ConnectorType.AND)
+                        .build())
                 .build();
 
-        assert(Evaluator.evaluate(logic,testRow));
+        LogicResult<Row> logicResult = Evaluator.evaluate(logic,testRow);
+        assert(Evaluator.evaluate(logic,testRow).getPassed());
     }
 
     @Test
@@ -61,18 +62,19 @@ class EvaluatorTest
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")
                         .connectingChecksUsing(ConnectorType.OR)
-                        .addCheck("name equals", row -> row.getString("name").equals("Charles"))
-                        .addCheck("name equals", row -> row.getString("name").equals("Peter"))
+                        .withCheck("name equals", row -> row.getString("name").equals("Charles"))
+                        .withCheck("name equals", row -> row.getString("name").equals("Peter"))
                         .build())
                 .addGroup(new Group.Builder<Row>("group2")
-                        .addCheck("in Germany", row -> row.getString("country").equalsIgnoreCase("germany"))
-                        .addCheck("age at or above 20", row -> row.getInteger("age") >= 20)
-                        .build(), ConnectorType.AND)
+                        .withCheck("in Germany", row -> row.getString("country").equalsIgnoreCase("germany"))
+                        .withCheck("age at or above 20", row -> row.getInteger("age") >= 20)
+                        .connectingToPreviousGroupUsing(ConnectorType.AND)
+                        .build())
                 .build();
 
         boolean totalResult = rows.stream()
                 .map(row -> Evaluator.evaluate(logic, row))
-                .allMatch(evaluationResult -> evaluationResult);
+                .allMatch(evaluationResult -> evaluationResult.getPassed());
 
         assert(totalResult);
     }
@@ -84,13 +86,14 @@ class EvaluatorTest
 
         Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
-                        .addCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
+                        .withCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
                         .build())
                 .addGroup(new Group.Builder<String[]>("group2")
-                        .addCheck("is greater", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
-                        .build(), ConnectorType.AND)
+                        .withCheck("is greater", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
+                        .connectingToPreviousGroupUsing(ConnectorType.AND)
+                        .build())
                 .build();
 
-        assert(Evaluator.evaluate(logic,testData.split(";")));
+        assert(Evaluator.evaluate(logic,testData.split(";")).getPassed());
     }
 }

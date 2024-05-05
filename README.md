@@ -34,7 +34,7 @@ checks like this:
 
     Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
-                        .addCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
+                        .withCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
                         .build())
                 .build();
 
@@ -51,14 +51,14 @@ checks to a group you can specify how the checks within the group are connected 
     Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
                     .connectingChecksUsing(ConnectorType.OR)
-                    .addCheck("it's Charles", fieldArray ->  fieldArray[0].equals("Charles"))
-                    .addCheck("it's Peter", fieldArray ->  fieldArray[0].equals("Peter"))
+                    .withCheck("it's Charles", fieldArray ->  fieldArray[0].equals("Charles"))
+                    .withCheck("it's Peter", fieldArray ->  fieldArray[0].equals("Peter"))
                     .build())
                 .addGroup(new Group.Builder<String[]>("group2")
-                    .addCheck("is grown up", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
+                    .withCheck("is grown up", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
                     .build(), ConnectorType.AND)
                 .addGroup(new Group.Builder<String[]>("group2")
-                    .addCheck("with big shoesize", fieldArray ->  Integer.parseInt(fieldArray[4]) > 44)
+                    .withCheck("with big shoesize", fieldArray ->  Integer.parseInt(fieldArray[4]) > 44)
                     .build(), ConnectorType.OR)
             .build();
 
