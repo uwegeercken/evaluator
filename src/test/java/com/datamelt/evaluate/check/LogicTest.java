@@ -20,13 +20,13 @@ class LogicTest
 
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")
-                        .connectingChecksUsing(ConnectorType.OR)
+                        .connectorBetweenChecks(ConnectorType.OR)
                         .withCheck("it's Charles", row -> row.getString("name").equals("Charles"))
                         .withCheck("it's Peter", row -> row.getString("name").equals("Peter"))
                         .build())
                 .addGroup(new Group.Builder<Row>("group2")
                         .withCheck("living in Germany", row -> row.getString("country").equalsIgnoreCase("germany"))
-                        .connectingToPreviousGroupUsing(ConnectorType.AND)
+                        .connectorToPreviousGroup(ConnectorType.AND)
                         .build())
                 .build();
 
@@ -57,14 +57,14 @@ class LogicTest
 
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")
-                        .connectingChecksUsing(ConnectorType.OR)
+                        .connectorBetweenChecks(ConnectorType.OR)
                         .withCheck("name equals", row -> row.getString("name").equals("Charles"))
                         .withCheck("name equals", row -> row.getString("name").equals("Peter"))
                         .build())
                 .addGroup(new Group.Builder<Row>("group2")
                         .withCheck("in Germany", row -> row.getString("country").equalsIgnoreCase("germany"))
                         .withCheck("age at or above 20", row -> row.getInteger("age") >= 20)
-                        .connectingToPreviousGroupUsing(ConnectorType.AND)
+                        .connectorToPreviousGroup(ConnectorType.AND)
                         .build())
                 .build();
 
@@ -86,7 +86,7 @@ class LogicTest
                         .build())
                 .addGroup(new Group.Builder<String[]>("group2")
                         .withCheck("is greater", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
-                        .connectingToPreviousGroupUsing(ConnectorType.AND)
+                        .connectorToPreviousGroup(ConnectorType.AND)
                         .build())
                 .build();
 

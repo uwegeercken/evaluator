@@ -42,25 +42,25 @@ The logic object and the group object expect a string array as the type paramete
 
     EvaluationResult<String[]> result = logic.evaluate(testData.split(";"))
 
-The static "evaluate" method returns an EvaluationResult. It contains the results of all checks and groups. the passed method returns true if the provided data passes the defined logic and returns false if not.
+The static "evaluate" method returns an EvaluationResult. It contains the results of all checks and groups. The passed method returns true if the provided data passes the defined logic and returns false if not.
 You can process a list of data objects easily by repeatedly calling this method.
 
-You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group using the connectingToPreviousGroupUsing method - default is AND. When adding
-checks to a group you can specify how the checks within the group are connected (AND, OR, NOT, NOR) using the connectingChecksUsing(...) method - default is AND.
+You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group using the connectorToPreviousGroup method - default is AND. When adding
+checks to a group you can specify how the checks within the group are connected (AND, OR, NOT, NOR) using the connectorBetweenChecks(...) method - default is AND.
 
     Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
-                    .connectingChecksUsing(ConnectorType.OR)
+                    .connectorBetweenChecks(ConnectorType.OR)
                     .withCheck("it's Charles", fieldArray ->  fieldArray[0].equals("Charles"))
                     .withCheck("it's Peter", fieldArray ->  fieldArray[0].equals("Peter"))
                     .build())
                 .addGroup(new Group.Builder<String[]>("group2")
                     .withCheck("is grown up", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
-                    .connectingToPreviousGroupUsing(ConnectorType.AND)
+                    .connectorToPreviousGroup(ConnectorType.AND)
                     .build())
                 .addGroup(new Group.Builder<String[]>("group2")
                     .withCheck("with big shoesize", fieldArray ->  Integer.parseInt(fieldArray[4]) > 44)
-                    .connectingToPreviousGroupUsing(ConnectorType.OR)
+                    .connectorToPreviousGroup(ConnectorType.OR)
                     .build())
             .build();
 

@@ -69,7 +69,7 @@ public class Group<T>
             this.name = name;
         }
 
-        public Builder<T> connectingChecksUsing(ConnectorType connectorType)
+        public Builder<T> connectorBetweenChecks(ConnectorType connectorType)
         {
             this.connectorTypeChecks = connectorType;
             return this;
@@ -81,7 +81,7 @@ public class Group<T>
             return this;
         }
 
-        public Builder<T> connectingToPreviousGroupUsing(ConnectorType connectorToPreviousGroup)
+        public Builder<T> connectorToPreviousGroup(ConnectorType connectorToPreviousGroup)
         {
             connectorTypePreviousGroup = connectorToPreviousGroup;
             return this;
