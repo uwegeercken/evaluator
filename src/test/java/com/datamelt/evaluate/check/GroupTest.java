@@ -165,7 +165,7 @@ public class GroupTest
                         .build())
                 .build();
 
-        LogicResult<Integer> logicResult = Evaluator.evaluate(logic, 8000);
+        EvaluationResult<Integer> evaluationResult = Evaluator.evaluate(logic, 8000);
         assert(Evaluator.evaluate(logic, 8000).getPassed());
     }
 

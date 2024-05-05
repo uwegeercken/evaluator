@@ -1,9 +1,9 @@
 package com.datamelt.evaluate;
 
+import com.datamelt.evaluate.check.ConnectorType;
+import com.datamelt.evaluate.check.EvaluationResult;
 import com.datamelt.evaluate.check.Group;
 import com.datamelt.evaluate.check.Logic;
-import com.datamelt.evaluate.check.LogicResult;
-import com.datamelt.evaluate.check.ConnectorType;
 import com.datamelt.evaluate.utilities.Row;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +34,7 @@ class EvaluatorTest
                         .build())
                 .build();
 
-        LogicResult<Row> logicResult = Evaluator.evaluate(logic,testRow);
+        EvaluationResult<Row> evaluationResult = Evaluator.evaluate(logic,testRow);
         assert(Evaluator.evaluate(logic,testRow).getPassed());
     }
 

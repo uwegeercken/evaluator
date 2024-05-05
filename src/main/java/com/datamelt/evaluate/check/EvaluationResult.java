@@ -3,7 +3,7 @@ package com.datamelt.evaluate.check;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogicResult<T>
+public class EvaluationResult<T>
 {
     private final List<GroupResult<T>> groupResults= new ArrayList<>();
 

@@ -3,7 +3,7 @@
 Library to construct logic to check values using flexible conditions and grouping using AND, OR, NOT or NOR.
 
 Checks can be added to groups, where the checks are connected using also AND, OR, NOT, NOR. Multiple groups can
-also be connected using AND, OR, NOT, NOR. This way one can create complex logic easily.
+be connected to each other also using AND, OR, NOT, NOR. This way one can create complex logic easily.
 
 Groups and their checks are like a unit of tests or filters using the specified connection logic between the checks. And
 by connecting groups to each other the single group logic is combined to a more complex structure.
@@ -38,14 +38,14 @@ checks like this:
                         .build())
                 .build();
 
-The logic and the group expect a string array as the type parameter. To test if the test data passes all checks (rules) simply call:
+The logic object and the group object expect a string array as the type parameter. To test if the test data passes all checks (rules) simply call:
 
     boolean result = Evaluator.evaluate(logic, testData.split(";"))
 
-The static "evaluate" method returns true if the provided data passes the defined logic and returns false if not. You can process a list of data objects easily by repeatedly calling this method.
-There is also a method available to evaluate a single group.
+The static "evaluate" method returns an EvaluationResult. It contains the results of all checks and groups. the getPassed method returns true if the provided data passes the defined logic and returns false if not.
+You can process a list of data objects easily by repeatedly calling this method.
 
-You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group - default is AND. When adding
+You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group using the connectingToPreviousGroupUsing method - default is AND. When adding
 checks to a group you can specify how the checks within the group are connected (AND, OR, NOT, NOR) using the connectingChecksUsing(...) method - default is AND.
 
     Logic<String[]> logic = new Logic.Builder<String[]>()
@@ -56,35 +56,26 @@ checks to a group you can specify how the checks within the group are connected 
                     .build())
                 .addGroup(new Group.Builder<String[]>("group2")
                     .withCheck("is grown up", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
-                    .build(), ConnectorType.AND)
+                    .connectingToPreviousGroupUsing(ConnectorType.AND)
+                    .build())
                 .addGroup(new Group.Builder<String[]>("group2")
                     .withCheck("with big shoesize", fieldArray ->  Integer.parseInt(fieldArray[4]) > 44)
-                    .build(), ConnectorType.OR)
+                    .connectingToPreviousGroupUsing(ConnectorType.OR)
+                    .build())
             .build();
 
 If you don't define any checks in a group the result will evaluate to "false". If you don't add any groups to a logic object then the result will evaluate also to "false".
 
 Instead of using a string array like in the case above, you can use any other object that you want to test against a defined logic. Like
 e.g. a record from a SQL resultset or a row that contains all fields parsed from a CSV file. Using an object that represents a row of attributes
-or fields will allow you to compare fields against each other. Or you may check a field against a defined value.
+or fields will allow you to compare fields against each other.
 
 You may use the getGroupConnectionLogic() method to retrieve a string representation of the logic and how groups and checks are evaluated. 
 
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
-The Evaluator object also provides test methods. Pass either a group or a logic object and a filter type to receive a verbal description
-for those checks which failed, those which passed or for all checks - depending on the selected filter type.
-
-To test a group:
-
-    List<String> results = logic.getGroup("group1").test(testData.split(";"), CheckResultFilterType.FAILED_ONLY);
-
-To test a complete logic (returns a map of group names and their list of results):
-
-    Map<String,List<String>> tests = Evaluator.test(logic, testData.split(";"), CheckResultFilterType.ALL);
-
 Using groups, the AND, OR, NOT, NOR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets or complicated designs with if statements.
 
-last update: Uwe Geercken - 2024/05/04
+last update: Uwe Geercken - 2024/05/05
