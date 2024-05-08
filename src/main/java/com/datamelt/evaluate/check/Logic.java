@@ -29,12 +29,12 @@ public class Logic<T>
 
     public EvaluationResult<T> evaluate(T data)
     {
-        EvaluationResult<T> evaluationResult = new EvaluationResult<>();
-        for(Group<T> group : getGroups())
-        {
-            evaluationResult.addGroupResult(new GroupResult<>(group, data));
-        }
-        return evaluationResult;
+        return new EvaluationResult<>(
+                getGroups()
+                        .stream()
+                        .map(group -> new GroupResult<>(group, data))
+                        .toList()
+        );
     }
 
     public String getGroupConnectionLogic()

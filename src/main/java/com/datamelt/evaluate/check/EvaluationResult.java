@@ -1,15 +1,16 @@
 package com.datamelt.evaluate.check;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EvaluationResult<T>
 {
-    private final List<GroupResult<T>> groupResults= new ArrayList<>();
+    private final List<GroupResult<T>> groupResults;
+    private boolean passed;
 
-    public void addGroupResult(GroupResult<T> groupResult)
+    public EvaluationResult(List<GroupResult<T>> groupResults)
     {
-        groupResults.add(groupResult);
+        this.groupResults = groupResults;
+        this.evaluate();
     }
 
     public List<GroupResult<T>> getGroupResults()
@@ -18,6 +19,11 @@ public class EvaluationResult<T>
     }
 
     public boolean passed()
+    {
+        return passed;
+    }
+
+    private void evaluate()
     {
         boolean result = false;
         if(!groupResults.isEmpty())
@@ -28,33 +34,30 @@ public class EvaluationResult<T>
                 result = combineResults(result, groupResults.get(i));
             }
         }
-        return result;
+        passed = result;
     }
 
-    private boolean combineResults(boolean groupResult1, GroupResult<T> groupResult2)
+    private boolean combineResults(boolean intermediateResult, GroupResult<T> groupResult2)
     {
         switch (groupResult2.getConnectorToPreviousGroup())
         {
             case AND ->
             {
-                return groupResult2.passed() && groupResult1;
+                return groupResult2.passed() && intermediateResult;
             }
             case OR ->
             {
-                return groupResult2.passed() || groupResult1;
+                return groupResult2.passed() || intermediateResult;
             }
             case NOT ->
             {
-                return !(groupResult2.passed() && groupResult1);
+                return !(groupResult2.passed() && intermediateResult);
             }
             case NOR ->
             {
-                return !(groupResult2.passed() || groupResult1);
+                return !(groupResult2.passed() || intermediateResult);
             }
             default -> throw new IllegalStateException("unexpected value: " + groupResult2.getConnectorToPreviousGroup());
         }
     }
-
-
-
 }

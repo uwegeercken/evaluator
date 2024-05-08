@@ -31,7 +31,7 @@ class LogicTest
                 .build();
 
         EvaluationResult<Row> evaluationResult = logic.evaluate(testRow);
-        assert(logic.evaluate(testRow).passed());
+        assert(evaluationResult.passed());
     }
 
     @Test
