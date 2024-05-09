@@ -31,6 +31,7 @@ class LogicTest
                 .build();
 
         EvaluationResult<Row> evaluationResult = logic.evaluate(testRow);
+        List<CheckResult> checkResults = evaluationResult.getCheckResults("group1", CheckResultFilterType.PASSED_ONLY);
         assert(evaluationResult.passed());
     }
 

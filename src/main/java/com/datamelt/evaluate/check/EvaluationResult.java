@@ -18,6 +18,27 @@ public class EvaluationResult<T>
         return groupResults;
     }
 
+    public List<CheckResult> getCheckResults(String groupName, CheckResultFilterType checkResultFilter)
+    {
+        GroupResult<T> groupResult = groupResults
+                .stream().
+                filter(result -> result.getName().equals(groupName))
+                .findAny().orElseThrow(()-> new RuntimeException("the specified group [" + groupName + "] was not found"));;
+
+        return groupResult.getCheckResults()
+                .stream()
+                .filter(CheckResultFilterType.getFilter(checkResultFilter))
+                .toList();
+    }
+
+    public GroupResult<T> getGroupResult(String groupName)
+    {
+        return groupResults
+                .stream().
+                filter(result -> result.getName().equals(groupName))
+                .findAny().orElseThrow(()-> new RuntimeException("the specified group [" + groupName + "] was not found"));
+    }
+
     public boolean passed()
     {
         return passed;
