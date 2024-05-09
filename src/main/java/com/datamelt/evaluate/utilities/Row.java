@@ -121,7 +121,13 @@ public class Row
 
         public Builder addField(String name, Object value)
         {
-            fields.put(name, value);
+            this.fields.put(name, value);
+            return this;
+        }
+
+        public Builder addFields(Map<String, Object> fields)
+        {
+            this.fields.putAll(fields);
             return this;
         }
 
