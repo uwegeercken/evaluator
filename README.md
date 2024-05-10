@@ -66,11 +66,22 @@ checks to a group you can specify how the checks within the group are connected 
 
 If you don't define any checks in a group the result will evaluate to "false". If you don't add any groups to a logic object then the result will evaluate also to "false".
 
+If you have a list of objects, you can loop and evaluate if the data passes all checks of the logic. Here - as an example - we have a list of Geonames (geographical locations from geonames.org).
+The filter ignores geonames which do not pass the defined logic.
+
+    List<Geoname> filteredGeonames = GeonameHandler.processCsvFile("/home/uwe/development/data/geonames/DE.txt",0)
+        .stream()
+        .filter(geoname -> logic.evaluate(geoname).passed())
+        .toList();
+
+
 Instead of using a string array like in the case above, you can use any other object that you want to test against a defined logic. Like
 e.g. a record from a SQL resultset or a row that contains all fields parsed from a CSV file. Using an object that represents a row of attributes
 or fields will allow you to compare fields against each other.
 
-You may use the getGroupConnectionLogic() method to retrieve a string representation of the logic and how groups and checks are evaluated. 
+You may use the getGroupConnectionLogic() method to retrieve a string representation of the logic and how groups and checks are evaluated:
+
+    System.out.println("connection logic: " + logic.getGroupConnectionLogic());
 
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
@@ -78,4 +89,4 @@ static variables.
 Using groups, the AND, OR, NOT, NOR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets or complicated designs with if statements.
 
-last update: Uwe Geercken - 2024/05/05
+last update: Uwe Geercken - 2024/05/10
