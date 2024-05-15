@@ -19,7 +19,7 @@ public class Group<T>
     private Group(Builder<T> builder)
     {
         this.name = builder.name;
-        this.checkConnectorType = builder.groupConnectorTypeChecks;
+        this.checkConnectorType = builder.checkConnectorType;
         this.groupConnectorTypePreviousGroup = builder.groupConnectorTypePreviousGroup;
 
         this.checks = builder.checks;
@@ -30,7 +30,7 @@ public class Group<T>
         return name;
     }
 
-    public GroupConnectorType getConnectorTypeChecks()
+    public CheckConnectorType getCheckConnectorType()
     {
         return checkConnectorType;
     }
@@ -54,7 +54,7 @@ public class Group<T>
         return getChecks()
                 .stream()
                 .map(Check::getName)
-                .collect(Collectors.joining(" " + getConnectorTypeChecks().name() + " "));
+                .collect(Collectors.joining(" " + getCheckConnectorType().name() + " "));
     }
 
     public static class Builder<T>
