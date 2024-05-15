@@ -5,16 +5,16 @@ import java.util.List;
 public class GroupResult<T>
 {
     private final String name;
-    private final ConnectorType connectorTypeChecks;
-    private final ConnectorType connectorTypePreviousGroup;
+    private final GroupConnectorType groupConnectorTypeChecks;
+    private final GroupConnectorType groupConnectorTypePreviousGroup;
     private final List<CheckResult> checkResults;
     private final boolean passed;
 
     public GroupResult(Group<T> group, T dataObject)
     {
         this.name = group.getName();
-        this.connectorTypeChecks = group.getConnectorTypeChecks();
-        this.connectorTypePreviousGroup = group.getConnectorTypePreviousGroup();
+        this.groupConnectorTypeChecks = group.getConnectorTypeChecks();
+        this.groupConnectorTypePreviousGroup = group.getConnectorTypePreviousGroup();
         this.checkResults = group.getCheckResults(dataObject);
         this.passed = getCombinedChecksResults(checkResults);
     }
@@ -24,14 +24,14 @@ public class GroupResult<T>
         return passed;
     }
 
-    public ConnectorType getConnectorToPreviousGroup()
+    public GroupConnectorType getConnectorToPreviousGroup()
     {
-        return connectorTypePreviousGroup;
+        return groupConnectorTypePreviousGroup;
     }
 
-    public ConnectorType getConnectorTypePreviousGroup()
+    public GroupConnectorType getConnectorTypePreviousGroup()
     {
-        return connectorTypePreviousGroup;
+        return groupConnectorTypePreviousGroup;
     }
 
     public String getName()
@@ -46,7 +46,7 @@ public class GroupResult<T>
 
     private boolean getCombinedChecksResults(List<CheckResult> results)
     {
-        switch (connectorTypeChecks)
+        switch (groupConnectorTypeChecks)
         {
             case OR ->
             {
@@ -58,15 +58,15 @@ public class GroupResult<T>
             {
                 boolean result =  results.stream()
                         .map(CheckResult::passed)
-                        .reduce((result1, result2) -> (result1 || result2)).orElse(true);
+                        .reduce((result1, result2) -> (result1 || result2)).orElse(false);
                 return !result;
             }
             case NOT ->
             {
                 boolean result = results.stream()
                         .map(CheckResult::passed)
-                        .reduce((result1, result2) -> (result1 && result2)).orElse(true);
-                return !result;
+                        .reduce((result1, result2) -> (result1 && !result2)).orElse(false);
+                return result;
             }
             default ->
             {

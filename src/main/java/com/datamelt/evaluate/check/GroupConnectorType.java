@@ -1,6 +1,6 @@
 package com.datamelt.evaluate.check;
 
-public enum ConnectorType
+public enum GroupConnectorType
 {
     AND,
     OR,

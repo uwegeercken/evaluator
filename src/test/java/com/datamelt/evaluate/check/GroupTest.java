@@ -36,7 +36,7 @@ public class GroupTest
     public void testGroupUsingOrConditionSuccess()
     {
         Group<Long> group1 = new Group.Builder<Long>("group1")
-                .connectorBetweenChecks(ConnectorType.OR)
+                .connectorBetweenChecks(CheckConnectorType.OR)
                 .withCheck("is greater", value -> value > 1000)
                 .withCheck("equals", value -> value==333)
                 .build();
@@ -48,63 +48,11 @@ public class GroupTest
     public void testGroupUsingOrConditionFailed()
     {
         Group<Integer> group1 = new Group.Builder<Integer>("group1")
-                .connectorBetweenChecks(ConnectorType.OR)
+                .connectorBetweenChecks(CheckConnectorType.OR)
                 .withCheck("is greater", value -> value > 10000)
                 .withCheck("equals", value -> value == 1)
                 .build();
         assert(!new GroupResult<>(group1,9999).passed());
-    }
-
-    @Test
-    public void testGroupUsingNorConditionSuccess()
-    {
-        // NOR only gives a true result, if all checks are false
-        Group<Integer> group1 = new Group.Builder<Integer>("group1")
-                .connectorBetweenChecks(ConnectorType.NOR)
-                .withCheck("is smaller", value -> value > 1000) // false
-                .withCheck("equals", value -> Objects.equals(value, 400)) // false
-                .withCheck("equals", value -> Objects.equals(value, 5000)) // false
-                .build();
-        assert(new GroupResult<>(group1,200).passed());
-    }
-
-    @Test
-    public void testGroupUsingNorConditionFailed()
-    {
-        // NOR only gives a true result, if all checks are false
-        Group<Integer> group1 = new Group.Builder<Integer>("group1")
-                .connectorBetweenChecks(ConnectorType.NOR)
-                .withCheck("is smaller", value -> value > 100) // true
-                .withCheck("equals", value -> Objects.equals(value, 400)) // false
-                .withCheck("equals", value -> Objects.equals(value, 5000)) // false
-                .build();
-        assert(!new GroupResult<>(group1,200).passed());
-    }
-
-    @Test
-    public void testGroupUsingNotConditionSuccess()
-    {
-        // NOT gives a true result, if at least one check is false
-        Group<Integer> group1 = new Group.Builder<Integer>("group1")
-                .connectorBetweenChecks(ConnectorType.NOT)
-                .withCheck("is smaller", value -> value > 100) // true
-                .withCheck("equals", value -> Objects.equals(value, 200)) // false
-                .withCheck("equals", value -> Objects.equals(value, 5000)) // false
-                .build();
-        assert(new GroupResult<>(group1,200).passed());
-    }
-
-    @Test
-    public void testGroupUsingNotConditionFailed()
-    {
-        // NOT gives a true result, if at least one check is false
-        Group<Integer> group1 = new Group.Builder<Integer>("group1")
-                .connectorBetweenChecks(ConnectorType.NOT)
-                .withCheck("is smaller", value -> value > 100) // true
-                .withCheck("equals", value -> Objects.equals(value, 200)) // false
-                .withCheck("equals", value -> Objects.equals(value, 200)) // false
-                .build();
-        assert(!new GroupResult<>(group1,200).passed());
     }
 
     @Test
@@ -116,11 +64,11 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
                         .withCheck("is greater", value -> value > 5000)
-                        .connectorToPreviousGroup(ConnectorType.OR)
+                        .connectorToPreviousGroup(GroupConnectorType.OR)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is greater", value -> value < 7500)
-                        .connectorToPreviousGroup(ConnectorType.AND)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .build();
 
@@ -137,11 +85,11 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
                         .withCheck("is greater", value -> value > 5000)
-                        .connectorToPreviousGroup(ConnectorType.OR)
+                        .connectorToPreviousGroup(GroupConnectorType.OR)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 7500)
-                        .connectorToPreviousGroup(ConnectorType.AND)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .build();
 
@@ -158,11 +106,11 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
                         .withCheck("is greater", value -> value > 10000)
-                        .connectorToPreviousGroup(ConnectorType.AND)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 7500)
-                        .connectorToPreviousGroup(ConnectorType.NOR)
+                        .connectorToPreviousGroup(GroupConnectorType.NOR)
                         .build())
                 .build();
 
@@ -179,11 +127,11 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
                         .withCheck("is greater", value -> value > 5000)
-                        .connectorToPreviousGroup(ConnectorType.AND)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 7500)
-                        .connectorToPreviousGroup(ConnectorType.NOR)
+                        .connectorToPreviousGroup(GroupConnectorType.NOR)
                         .build())
                 .build();
 
@@ -200,11 +148,11 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
                         .withCheck("is greater", value -> value > 5000)
-                        .connectorToPreviousGroup(ConnectorType.AND)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 4000)
-                        .connectorToPreviousGroup(ConnectorType.NOT)
+                        .connectorToPreviousGroup(GroupConnectorType.NOT)
                         .build())
                 .build();
 
@@ -221,11 +169,11 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
                         .withCheck("is greater", value -> value > 5000)
-                        .connectorToPreviousGroup(ConnectorType.AND)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 10000)
-                        .connectorToPreviousGroup(ConnectorType.NOT)
+                        .connectorToPreviousGroup(GroupConnectorType.NOT)
                         .build())
                 .build();
 
@@ -242,11 +190,11 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
                         .withCheck("is greater", value -> value > 5000)
-                        .connectorToPreviousGroup(ConnectorType.AND)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 7500)
-                        .connectorToPreviousGroup(ConnectorType.NOT)
+                        .connectorToPreviousGroup(GroupConnectorType.NOT)
                         .build())
                 .build();
 

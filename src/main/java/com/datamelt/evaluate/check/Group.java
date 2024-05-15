@@ -13,14 +13,14 @@ public class Group<T>
     private static final Logger logger = LoggerFactory.getLogger(Group.class);
     private final List<Check<T>> checks;
     private final String name;
-    private final ConnectorType connectorTypeChecks;
-    private final ConnectorType connectorTypePreviousGroup;
+    private final CheckConnectorType checkConnectorType;
+    private final GroupConnectorType groupConnectorTypePreviousGroup;
 
     private Group(Builder<T> builder)
     {
         this.name = builder.name;
-        this.connectorTypeChecks = builder.connectorTypeChecks;
-        this.connectorTypePreviousGroup = builder.connectorTypePreviousGroup;
+        this.checkConnectorType = builder.groupConnectorTypeChecks;
+        this.groupConnectorTypePreviousGroup = builder.groupConnectorTypePreviousGroup;
 
         this.checks = builder.checks;
     }
@@ -30,14 +30,14 @@ public class Group<T>
         return name;
     }
 
-    public ConnectorType getConnectorTypeChecks()
+    public GroupConnectorType getConnectorTypeChecks()
     {
-        return connectorTypeChecks;
+        return checkConnectorType;
     }
 
-    public ConnectorType getConnectorTypePreviousGroup()
+    public GroupConnectorType getConnectorTypePreviousGroup()
     {
-        return connectorTypePreviousGroup;
+        return groupConnectorTypePreviousGroup;
     }
 
     public List<Check<T>> getChecks() { return checks; }
@@ -61,17 +61,17 @@ public class Group<T>
     {
         private final List<Check<T>> checks = new ArrayList<>();
         private final String name;
-        private ConnectorType connectorTypeChecks = ConnectorType.AND;
-        private ConnectorType connectorTypePreviousGroup = ConnectorType.AND;
+        private CheckConnectorType checkConnectorType = CheckConnectorType.AND;
+        private GroupConnectorType groupConnectorTypePreviousGroup = GroupConnectorType.AND;
 
         public Builder(String name)
         {
             this.name = name;
         }
 
-        public Builder<T> connectorBetweenChecks(ConnectorType connectorType)
+        public Builder<T> connectorBetweenChecks(CheckConnectorType checkConnectorType)
         {
-            this.connectorTypeChecks = connectorType;
+            this.checkConnectorType = checkConnectorType;
             return this;
         }
 
@@ -81,9 +81,9 @@ public class Group<T>
             return this;
         }
 
-        public Builder<T> connectorToPreviousGroup(ConnectorType connectorToPreviousGroup)
+        public Builder<T> connectorToPreviousGroup(GroupConnectorType connectorToPreviousGroup)
         {
-            connectorTypePreviousGroup = connectorToPreviousGroup;
+            groupConnectorTypePreviousGroup = connectorToPreviousGroup;
             return this;
         }
 

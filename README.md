@@ -17,10 +17,10 @@ an OR connector and group3 is connected to group2 with an AND connector, the fol
 So the result of group3 will be combined with the combined result of group1 and group2. You can retrieve a description of the connection logic using
 the logic class method getGroupConnectionLogic().
 
-If you connect multiple checks with an AND condition, then all must evaluate to "true" so that the overall result is "true".
-If you connect multiple checks with an OR condition, then at least one must evaluate to "true" so that the overall result is "true".
-If you connect multiple checks with an NOR condition, then all must evaluate to "false" so that the overall result is "true".
-If you connect multiple checks with an NOT condition, then at least one must evaluate to "false" so that the overall result is "true".
+If you connect multiple groups with an AND condition, then all must evaluate to "true" so that the overall result is "true".
+If you connect multiple groups with an OR condition, then at least one must evaluate to "true" so that the overall result is "true".
+If you connect multiple groups with an NOR condition, then all must evaluate to "false" so that the overall result is "true".
+If you connect multiple groups with an NOT condition, then the first one must evaluate to "true" and the other one to "false" so that the overall result is "true".
 
 For the groups it is the same principle, but remember that a group is connected to the result of the previous group(s) - as explained above. 
 

@@ -72,7 +72,7 @@ public class EvaluationResult<T>
             }
             case NOT ->
             {
-                return !(groupResult2.passed() && intermediateResult);
+                return !groupResult2.passed() && intermediateResult;
             }
             case NOR ->
             {
