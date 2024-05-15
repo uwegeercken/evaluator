@@ -20,7 +20,7 @@ class LogicTest
 
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")
-                        .connectorBetweenChecks(GroupConnectorType.OR)
+                        .connectorBetweenChecks(CheckConnectorType.OR)
                         .withCheck("it's Charles", row -> row.getString("name").equals("Charles"))
                         .withCheck("it's Peter", row -> row.getString("name").equals("Peter"))
                         .build())
@@ -58,7 +58,7 @@ class LogicTest
 
         Logic<Row> logic = new Logic.Builder<Row>()
                 .addGroup(new Group.Builder<Row>("group1")
-                        .connectorBetweenChecks(GroupConnectorType.OR)
+                        .connectorBetweenChecks(CheckConnectorType.OR)
                         .withCheck("name equals", row -> row.getString("name").equals("Charles"))
                         .withCheck("name equals", row -> row.getString("name").equals("Peter"))
                         .build())

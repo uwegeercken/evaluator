@@ -2,7 +2,7 @@
 
 Library to construct logic to check values using flexible conditions and grouping using AND, OR, NOT or NOR.
 
-Checks can be added to groups, where the checks are connected using also AND, OR, NOT, NOR. Multiple groups can
+Checks can be added to groups, where the checks are connected using AND or OR. Multiple groups can
 be connected to each other also using AND, OR, NOT, NOR. This way one can create complex logic easily.
 
 Groups and their checks are like a unit of tests or filters using the specified connection logic between the checks. And
@@ -89,4 +89,4 @@ static variables.
 Using groups, the AND, OR, NOT, NOR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets or complicated designs with if statements.
 
-last update: Uwe Geercken - 2024/05/10
+last update: Uwe Geercken - 2024/05/15
