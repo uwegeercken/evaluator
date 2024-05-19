@@ -1,28 +1,28 @@
 # evaluator
 
-Library to construct logic to check values using flexible conditions and grouping using AND, OR, NOT or NOR.
+Library to construct validation logic using flexible conditions and grouping using AND, OR, NOT or NOR. It is easy to
+implement validation logic with a few simple statements. But if the logic gets more complicated a structured approach will give more
+flexibility, more readability and easier maintenance of the code.
 
-Checks can be added to groups, where the checks are connected using AND or OR. Multiple groups can
-be connected to each other also using AND, OR, NOT, NOR. This way one can create complex logic easily.
+Checks can be added to groups, where the checks are connected using AND or OR. Multiple groups can be connected to each other
+by using AND, OR, NOT or NOR. This way one can create complex logic easily.
 
 Groups and their checks are like a unit of tests or filters using the specified connection logic between the checks. And
-by connecting groups to each other the single group logic is combined to a more complex structure.
+by connecting groups to each other the single group logic is combined to a more complex structure across multiple groups.
 
 The default connector between the checks of a group as well as for the connector between groups is AND. Note that the connector
-between groups defines the connector type to the previous group. So if you have three groups where group2 is connected to group1 with
+between groups defines the connector type to the **previous** group. So if you have three groups where group2 is connected to group1 with
 an OR connector and group3 is connected to group2 with an AND connector, the following logic will be applied: 
 
     ((result group1 OR result group2) AND result group3)
 
 So the result of group3 will be combined with the combined result of group1 and group2. You can retrieve a description of the connection logic using
-the logic class method getGroupConnectionLogic().
+the getGroupConnectionLogic() method in the logic class.
 
 If you connect multiple groups with an AND condition, then all must evaluate to "true" so that the overall result is "true".
 If you connect multiple groups with an OR condition, then at least one must evaluate to "true" so that the overall result is "true".
 If you connect multiple groups with an NOR condition, then all must evaluate to "false" so that the overall result is "true".
 If you connect multiple groups with an NOT condition, then the first one must evaluate to "true" and the other one to "false" so that the overall result is "true".
-
-For the groups it is the same principle, but remember that a group is connected to the result of the previous group(s) - as explained above. 
 
 Checks have a name plus the logic to apply to the data. The logic is a lambda expression which evaluates to a boolean true or false (a predicate).
 
@@ -38,12 +38,12 @@ checks like this:
                         .build())
                 .build();
 
-The logic object and the group object expect a string array as the type parameter. To test if the test data passes all checks (rules) simply call:
+The logic object and the group object expects - in this example - a string array as the type parameter. To test if the test data passes all checks (rules) simply call:
 
     EvaluationResult<String[]> result = logic.evaluate(testData.split(";"))
 
 The static "evaluate" method returns an EvaluationResult. It contains the results of all checks and groups. The passed method returns true if the provided data passes the defined logic and returns false if not.
-You can process a list of data objects easily by repeatedly calling this method.
+You can process a list of data objects easily by repeatedly calling the logic.evaluate(<data object>) method..
 
 You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group using the connectorToPreviousGroup method - default is AND. When adding
 checks to a group you can specify how the checks within the group are connected (AND, OR, NOT, NOR) using the connectorBetweenChecks(...) method - default is AND.
@@ -58,7 +58,7 @@ checks to a group you can specify how the checks within the group are connected 
                     .withCheck("is grown up", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
                     .connectorToPreviousGroup(ConnectorType.AND)
                     .build())
-                .addGroup(new Group.Builder<String[]>("group2")
+                .addGroup(new Group.Builder<String[]>("group3")
                     .withCheck("with big shoesize", fieldArray ->  Integer.parseInt(fieldArray[4]) > 44)
                     .connectorToPreviousGroup(ConnectorType.OR)
                     .build())
@@ -86,7 +86,7 @@ You may use the getGroupConnectionLogic() method to retrieve a string representa
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
-Using groups, the AND or OR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
-you can build very complex logic in a simple way without the need to use lots of brackets or complicated designs with if statements.
+Using groups with AND or OR connectors between the individual checks, as well as using AND, OR, NOT, NOR between the individual groups
+you can build very complex logic in a simple and structured way, without the need to use lots of brackets or complicated designs with if statements.
 
 last update: Uwe Geercken - 2024/05/19
