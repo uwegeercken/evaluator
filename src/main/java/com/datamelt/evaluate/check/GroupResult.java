@@ -62,4 +62,10 @@ public class GroupResult<T>
             }
         }
     }
+
+    @Override
+    public String toString()
+    {
+        return "group: [" + name + "] - passed [" + passed + "]";
+    }
 }

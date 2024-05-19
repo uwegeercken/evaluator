@@ -86,7 +86,7 @@ You may use the getGroupConnectionLogic() method to retrieve a string representa
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
-Using groups, the AND, OR, NOT, NOR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
+Using groups, the AND or OR as the connector between the individual checks, as well as the AND, OR, NOT, NOR between the different groups
 you can build very complex logic in a simple way without the need to use lots of brackets or complicated designs with if statements.
 
-last update: Uwe Geercken - 2024/05/15
+last update: Uwe Geercken - 2024/05/19
