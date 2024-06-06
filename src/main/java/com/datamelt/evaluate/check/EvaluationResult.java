@@ -20,22 +20,28 @@ public class EvaluationResult<T>
 
     public List<CheckResult> getCheckResults(String groupName, CheckResultFilterType checkResultFilter)
     {
-        GroupResult<T> groupResult = groupResults
-                .stream().
-                filter(result -> result.getName().equals(groupName))
-                .findAny().orElseThrow(()-> new RuntimeException("the specified group [" + groupName + "] was not found"));;
+        return getGroupResult(groupName).getCheckResults(checkResultFilter);
+    }
 
-        return groupResult.getCheckResults()
-                .stream()
-                .filter(CheckResultFilterType.getFilter(checkResultFilter))
-                .toList();
+    public long getTotalNumberOfCheckResults(CheckResultFilterType checkResultFilter)
+    {
+        return groupResults.stream()
+                .map(groupResult -> groupResult.getNumberOfCheckResults(checkResultFilter))
+                .reduce(0L,Long::sum);
+    }
+
+    public long getTotalNumberOfCheckResults()
+    {
+        return groupResults.stream()
+                .map(GroupResult::getNumberOfCheckResults)
+                .reduce(0L,Long::sum);
     }
 
     public GroupResult<T> getGroupResult(String groupName)
     {
         return groupResults
-                .stream().
-                filter(result -> result.getName().equals(groupName))
+                .stream()
+                .filter(result -> result.getName().equals(groupName))
                 .findAny().orElseThrow(()-> new RuntimeException("the specified group [" + groupName + "] was not found"));
     }
 

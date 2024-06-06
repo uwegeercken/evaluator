@@ -44,6 +44,26 @@ public class GroupResult<T>
         return checkResults;
     }
 
+    public List<CheckResult> getCheckResults(CheckResultFilterType checkResultFilter)
+    {
+        return checkResults.stream()
+                .filter(CheckResultFilterType.getFilter(checkResultFilter))
+                .toList();
+    }
+
+    public long getNumberOfCheckResults()
+    {
+        return checkResults.size();
+    }
+
+    public long getNumberOfCheckResults(CheckResultFilterType checkResultFilter)
+    {
+        return checkResults
+                .stream()
+                .filter(CheckResultFilterType.getFilter(checkResultFilter))
+                .toList().size();
+    }
+
     private boolean getCombinedChecksResults(List<CheckResult> results)
     {
         switch (checkConnectorType)
