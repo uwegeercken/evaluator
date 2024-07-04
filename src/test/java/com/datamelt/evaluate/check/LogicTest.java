@@ -4,7 +4,10 @@ import com.datamelt.evaluate.utilities.Row;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 class LogicTest
 {
@@ -92,5 +95,48 @@ class LogicTest
                 .build();
 
         assert(logic.evaluate(testData.split(";")).passed());
+    }
+
+    @Test
+    public void testLogicUsingMap()
+    {
+        Map<String,String> testData = new HashMap<>();
+        testData.put("name", "Charles");
+        testData.put("age","47");
+
+        Logic<Map<String,String>> logic = new Logic.Builder<Map<String,String>>()
+                .addGroup(new Group.Builder<Map<String,String>>("group1")
+                        .withCheck("name equals", map ->  map.get("name").equals("Charles"))
+                        .build())
+                .addGroup(new Group.Builder<Map<String,String>>("group2")
+                        .withCheck("is greater", map ->  Integer.parseInt(map.get("age")) > 40)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
+                        .build())
+                .build();
+
+        assert(logic.evaluate(testData).passed());
+    }
+
+    @Test
+    public void testLogicUsingMapAndPredicate()
+    {
+        Map<String,String> testData = new HashMap<>();
+        testData.put("name", "Charles");
+        testData.put("age","47");
+
+        Predicate<Map<String,String>> isCharles = map -> map.get("name").equals("Charles");
+        Predicate<Map<String,String>> ageAbove40 = map -> Integer.parseInt(map.get("age")) > 40;
+
+        Logic<Map<String,String>> logic = new Logic.Builder<Map<String,String>>()
+                .addGroup(new Group.Builder<Map<String,String>>("group1")
+                        .withCheck("name equals", isCharles)
+                        .build())
+                .addGroup(new Group.Builder<Map<String,String>>("group2")
+                        .withCheck("is greater", ageAbove40)
+                        .connectorToPreviousGroup(GroupConnectorType.AND)
+                        .build())
+                .build();
+
+        assert(logic.evaluate(testData).passed());
     }
 }

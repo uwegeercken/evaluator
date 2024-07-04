@@ -3,7 +3,8 @@ package com.datamelt.evaluate.utilities;
 import com.datamelt.evaluate.model.InvalidFieldReferenceException;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,11 +104,24 @@ public class Row
             throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
         }
     }
-    public Date getDate(String name) throws InvalidFieldReferenceException
+
+    public LocalDate getLocalDate(String name) throws InvalidFieldReferenceException
     {
         if(fields.containsKey(name))
         {
-            return (Date) fields.get(name);
+            return (LocalDate) fields.get(name);
+        }
+        else
+        {
+            throw new InvalidFieldReferenceException("undefined field with name [" + name + "]");
+        }
+    }
+
+    public LocalTime getLocalTime(String name) throws InvalidFieldReferenceException
+    {
+        if(fields.containsKey(name))
+        {
+            return (LocalTime) fields.get(name);
         }
         else
         {

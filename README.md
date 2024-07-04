@@ -89,4 +89,4 @@ static variables.
 Using groups with AND or OR connectors between the individual checks, as well as using AND, OR, NOT, NOR between the individual groups
 you can build very complex logic in a simple and structured way, without the need to use lots of brackets or complicated designs with if statements.
 
-last update: Uwe Geercken - 2024/06/06
+last update: Uwe Geercken - 2024/07/05
