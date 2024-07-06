@@ -1,6 +1,6 @@
 # evaluator
 
-## General
+### General
 Library to construct validation logic using flexible conditions and grouping using AND, OR, NOT or NOR. It is easy to
 implement validation logic with a few simple statements. But if the logic gets more complicated a structured approach will give more
 flexibility, more readability and easier maintenance of the code.
@@ -44,8 +44,9 @@ The logic object and the group object expects - in this example - a string array
     EvaluationResult<String[]> result = logic.evaluate(testData.split(";"))
 
 The static "evaluate" method returns an EvaluationResult. It contains the results of all checks and groups. The passed method returns true if the provided data passes the defined logic and returns false if not.
-You can process a list of data objects easily by repeatedly calling the logic.evaluate(<data object>) method..
+You can process a list of data objects easily by repeatedly calling the logic.evaluate(<data object>) method.
 
+#### Multiple Groups
 You may use multiple groups. When adding a group to the logic you can specify the connection type (AND, OR, NOT, NOR) to the previous group using the connectorToPreviousGroup method - default is AND. When adding
 checks to a group you can specify how the checks within the group are connected (AND, OR, NOT, NOR) using the connectorBetweenChecks(...) method - default is AND.
 
@@ -67,6 +68,7 @@ checks to a group you can specify how the checks within the group are connected 
 
 If you don't define any checks in a group the result will evaluate to "false". If you don't add any groups to a logic object then the result will evaluate also to "false".
 
+#### Looping with Java streams
 If you have a list of objects, you can loop and evaluate if the data passes all checks of the logic. Here - as an example - we have a list of Geonames (geographical locations from geonames.org).
 The filter ignores geonames which do not pass the defined logic.
 
@@ -77,7 +79,7 @@ The filter ignores geonames which do not pass the defined logic.
 
 Or you could e.g. check if the results of all objects is "passed":
     
-    List<Geoname> filteredGeonames = GeonameHandler.processCsvFile("/home/uwe/development/data/geonames/DE.txt",0)
+    boolean result = GeonameHandler.processCsvFile("/home/uwe/development/data/geonames/DE.txt",0)
         .stream()
         .map(logic::evaluate)
         .allMatch(EvaluationResult::passed);
@@ -94,9 +96,9 @@ You may use the getGroupConnectionLogic() method to retrieve a string representa
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
-## Examples
+### Examples
 
-### Using a Map
+#### Using a Map
 Simple example using a map as the container of the data.
 
     Map<String,String> testData = new HashMap<>();
@@ -115,7 +117,7 @@ Simple example using a map as the container of the data.
 
     boolean result = logic.evaluate(testData).passed();
 
-### Using a Map and Predicate
+#### Using a Map and Predicate
 Simple example using a map as the container of the data and defining the checks as predicates.
 
     Map<String,String> testData = new HashMap<>();
@@ -137,7 +139,7 @@ Simple example using a map as the container of the data and defining the checks 
 
     boolean result = logic.evaluate(testData).passed();
 
-## Summary
+### Summary
 
 Using groups with AND or OR connectors between the individual checks, as well as using AND, OR, NOT, NOR between the individual groups
 you can build very complex logic in a simple and structured way, without the need to use lots of brackets or complicated designs with if statements.
