@@ -1,5 +1,6 @@
 package com.datamelt.evaluate.check;
 
+import com.datamelt.evaluate.sample.Person;
 import com.datamelt.evaluate.utilities.Row;
 import org.junit.jupiter.api.Test;
 
@@ -83,18 +84,19 @@ class LogicTest
     public void testLogicUsingStringOfValues()
     {
         String testData = "Charles;47;Frankfurt;Germany";
+        String[] testDataFields = testData.split(";");
 
         Logic<String[]> logic = new Logic.Builder<String[]>()
                 .addGroup(new Group.Builder<String[]>("group1")
-                        .withCheck("name equals", fieldArray ->  fieldArray[0].equals("Charles"))
+                        .withCheck("name equals", fields ->  fields[0].equals("Charles"))
                         .build())
                 .addGroup(new Group.Builder<String[]>("group2")
-                        .withCheck("is greater", fieldArray ->  Integer.parseInt(fieldArray[1]) > 18)
+                        .withCheck("is greater", fields ->  Integer.parseInt(fields[1]) > 18)
                         .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .build();
 
-        assert(logic.evaluate(testData.split(";")).passed());
+        assert(logic.evaluate(testDataFields).passed());
     }
 
     @Test
@@ -138,5 +140,24 @@ class LogicTest
                 .build();
 
         assert(logic.evaluate(testData).passed());
+    }
+
+    @Test
+    public void testLogicUsingPerson()
+    {
+        Person person1 = new Person("Jackson", "Peter", 34);
+
+        Predicate<Person> isPeter = person -> person.firstname().equals("Peter");
+        Predicate<Person> thirtyOrOlder = person -> person.age() >= 30;
+
+
+        Logic<Person> logic = new Logic.Builder<Person>()
+                .addGroup(new Group.Builder<Person>("group1")
+                        .withCheck("peter", isPeter)
+                        .withCheck("30 or older", thirtyOrOlder)
+                        .build())
+                .build();
+
+        assert(logic.evaluate(person1).passed());
     }
 }

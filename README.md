@@ -1,5 +1,6 @@
 # evaluator
 
+## General
 Library to construct validation logic using flexible conditions and grouping using AND, OR, NOT or NOR. It is easy to
 implement validation logic with a few simple statements. But if the logic gets more complicated a structured approach will give more
 flexibility, more readability and easier maintenance of the code.
@@ -74,6 +75,13 @@ The filter ignores geonames which do not pass the defined logic.
         .filter(geoname -> logic.evaluate(geoname).passed())
         .toList();
 
+Or you could e.g. check if the results of all objects is "passed":
+    
+    List<Geoname> filteredGeonames = GeonameHandler.processCsvFile("/home/uwe/development/data/geonames/DE.txt",0)
+        .stream()
+        .map(logic::evaluate)
+        .allMatch(EvaluationResult::passed);
+
 
 Instead of using a string array like in the case above, you can use any other object that you want to test against a defined logic. Like
 e.g. a record from a SQL resultset or a row that contains all fields parsed from a CSV file. Using an object that represents a row of attributes
@@ -86,7 +94,52 @@ You may use the getGroupConnectionLogic() method to retrieve a string representa
 Instead of defining lambda expressions for the checks over and over again, you could also put them in a different class or library and use them as
 static variables.
 
+## Examples
+
+### Using a Map
+Simple example using a map as the container of the data.
+
+    Map<String,String> testData = new HashMap<>();
+    testData.put("name", "Charles");
+    testData.put("age","47");
+
+    Logic<Map<String,String>> logic = new Logic.Builder<Map<String,String>>()
+            .addGroup(new Group.Builder<Map<String,String>>("group1")
+                    .withCheck("name equals", map ->  map.get("name").equals("Charles"))
+                    .build())
+            .addGroup(new Group.Builder<Map<String,String>>("group2")
+                    .withCheck("is greater", map ->  Integer.parseInt(map.get("age")) > 40)
+                    .connectorToPreviousGroup(GroupConnectorType.AND)
+                    .build())
+            .build();
+
+    boolean result = logic.evaluate(testData).passed();
+
+### Using a Map and Predicate
+Simple example using a map as the container of the data and defining the checks as predicates.
+
+    Map<String,String> testData = new HashMap<>();
+    testData.put("name", "Charles");
+    testData.put("age","47");
+
+    Predicate<Map<String,String>> isCharles = map -> map.get("name").equals("Charles");
+    Predicate<Map<String,String>> ageAbove40 = map -> Integer.parseInt(map.get("age")) > 40;
+
+    Logic<Map<String,String>> logic = new Logic.Builder<Map<String,String>>()
+            .addGroup(new Group.Builder<Map<String,String>>("group1")
+                    .withCheck("name equals", isCharles)
+                    .build())
+            .addGroup(new Group.Builder<Map<String,String>>("group2")
+                    .withCheck("is greater", ageAbove40)
+                    .connectorToPreviousGroup(GroupConnectorType.AND)
+                    .build())
+            .build();
+
+    boolean result = logic.evaluate(testData).passed();
+
+## Summary
+
 Using groups with AND or OR connectors between the individual checks, as well as using AND, OR, NOT, NOR between the individual groups
 you can build very complex logic in a simple and structured way, without the need to use lots of brackets or complicated designs with if statements.
 
-last update: Uwe Geercken - 2024/07/05
+last update: Uwe Geercken - 2024/07/06
