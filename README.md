@@ -30,7 +30,7 @@ Checks have a name plus the logic to apply to the data. The logic is a lambda ex
 Below is a String named testData representing multiple fields, all separated by a semicolon. Define the logic consisting of a group and it's
 checks like this:
 
-    // testData fields: Name,Age,City,Country, Shoesize
+    // testData fields: Name,Age,City,Country,Shoesize
     String testData = "Charles;47;Frankfurt;Germany,48";
 
     Logic<String[]> logic = new Logic.Builder<String[]>()
