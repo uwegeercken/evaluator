@@ -110,7 +110,7 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 7500)
-                        .connectorToPreviousGroup(GroupConnectorType.NOR)
+                        .connectorToPreviousGroup(GroupConnectorType.OR_NOT)
                         .build())
                 .build();
 
@@ -131,7 +131,7 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 7500)
-                        .connectorToPreviousGroup(GroupConnectorType.NOR)
+                        .connectorToPreviousGroup(GroupConnectorType.OR_NOT)
                         .build())
                 .build();
 
@@ -152,7 +152,7 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 4000)
-                        .connectorToPreviousGroup(GroupConnectorType.NOT)
+                        .connectorToPreviousGroup(GroupConnectorType.AND_NOT)
                         .build())
                 .build();
 
@@ -173,7 +173,7 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 10000)
-                        .connectorToPreviousGroup(GroupConnectorType.NOT)
+                        .connectorToPreviousGroup(GroupConnectorType.AND_NOT)
                         .build())
                 .build();
 
@@ -194,7 +194,7 @@ public class GroupTest
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
                         .withCheck("is smaller", value -> value < 7500)
-                        .connectorToPreviousGroup(GroupConnectorType.NOT)
+                        .connectorToPreviousGroup(GroupConnectorType.AND_NOT)
                         .build())
                 .build();
 

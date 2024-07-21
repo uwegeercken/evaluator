@@ -4,6 +4,6 @@ public enum GroupConnectorType
 {
     AND,
     OR,
-    NOT,
-    NOR;
+    AND_NOT,
+    OR_NOT;
 }

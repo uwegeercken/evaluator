@@ -76,11 +76,11 @@ public class EvaluationResult<T>
             {
                 return groupResult2.passed() || intermediateResult;
             }
-            case NOT ->
+            case AND_NOT ->
             {
                 return !groupResult2.passed() && intermediateResult;
             }
-            case NOR ->
+            case OR_NOT ->
             {
                 return !(groupResult2.passed() || intermediateResult);
             }
