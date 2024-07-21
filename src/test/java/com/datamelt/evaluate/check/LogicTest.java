@@ -1,5 +1,6 @@
 package com.datamelt.evaluate.check;
 
+import com.datamelt.evaluate.sample.DataSample;
 import com.datamelt.evaluate.sample.Person;
 import com.datamelt.evaluate.utilities.Row;
 import org.junit.jupiter.api.Test;
@@ -145,7 +146,7 @@ class LogicTest
     @Test
     public void testLogicUsingPerson()
     {
-        Person person1 = new Person("Jackson", "Peter", 34);
+        Person person1 = new Person(1,"Jackson", "Peter", 34, "Hanburg");
 
         Predicate<Person> isPeter = person -> person.firstname().equals("Peter");
         Predicate<Person> thirtyOrOlder = person -> person.age() >= 30;
@@ -159,5 +160,120 @@ class LogicTest
                 .build();
 
         assert(logic.evaluate(person1).passed());
+    }
+
+    @Test
+    public void testLogicUsingDataSampleWithAndCondition()
+    {
+        DataSample dataSample = new DataSample();
+        List<Person> persons = dataSample.getSampleData();
+
+        Predicate<Person> livesInFrankfurt = person -> person.city().equals("Frankfurt");
+        Predicate<Person> thirtyOrOlder = person -> person.age() >= 30;
+
+        Logic<Person> logic = new Logic.Builder<Person>()
+                .addGroup(new Group.Builder<Person>("group1")
+                        .withCheck("livesInFrankfurt", livesInFrankfurt)
+                        .withCheck("30 or older", thirtyOrOlder)
+                        .build())
+                .build();
+
+        List<Integer> expectedPersonIds = List.of(1,3,7,9);
+
+        List <Integer> evaluatedPersonIds = persons.stream()
+                .filter(person -> logic.evaluate(person).passed())
+                .map(person -> person.id())
+                .toList();
+
+        assert(evaluatedPersonIds.size()== expectedPersonIds.size());
+        assert(evaluatedPersonIds.containsAll(expectedPersonIds));
+    }
+
+    @Test
+    public void testLogicUsingDataSampleWithOrCondition()
+    {
+        DataSample dataSample = new DataSample();
+        List<Person> persons = dataSample.getSampleData();
+
+        Predicate<Person> livesInFrankfurt = person -> person.city().equals("Frankfurt");
+        Predicate<Person> thirtyOrOlder = person -> person.age() >= 30;
+
+        Logic<Person> logic = new Logic.Builder<Person>()
+                .addGroup(new Group.Builder<Person>("group1")
+                        .withCheck("livesInFrankfurt", livesInFrankfurt)
+                        .withCheck("30 or older", thirtyOrOlder)
+                        .connectorBetweenChecks(CheckConnectorType.OR)
+                        .build())
+                .build();
+
+        List<Integer> expectedPersonIds = List.of(1,2,3,5,7,9);
+
+        List <Integer> evaluatedPersonIds = persons.stream()
+                .filter(person -> logic.evaluate(person).passed())
+                .map(person -> person.id())
+                .toList();
+
+        assert(evaluatedPersonIds.size()== expectedPersonIds.size());
+        assert(evaluatedPersonIds.containsAll(expectedPersonIds));
+    }
+
+    @Test
+    public void testLogicUsingDataSampleWithAndNotCondition()
+    {
+        DataSample dataSample = new DataSample();
+        List<Person> persons = dataSample.getSampleData();
+
+        Predicate<Person> livesInFrankfurt = person -> person.city().equals("Frankfurt");
+        Predicate<Person> thirtyOrOlder = person -> person.age() >= 30;
+
+        Logic<Person> logic = new Logic.Builder<Person>()
+                .addGroup(new Group.Builder<Person>("group1")
+                        .withCheck("livesInFrankfurt", livesInFrankfurt)
+                        .build())
+                .addGroup(new Group.Builder<Person>("group2")
+                        .connectorToPreviousGroup(GroupConnectorType.AND_NOT)
+                        .withCheck("30 or older", thirtyOrOlder)
+                        .build())
+                .build();
+
+        List<Integer> expectedPersonIds = List.of(5);
+
+        List <Integer> evaluatedPersonIds = persons.stream()
+                .filter(person -> logic.evaluate(person).passed())
+                .map(person -> person.id())
+                .toList();
+
+        assert(evaluatedPersonIds.size()== expectedPersonIds.size());
+        assert(evaluatedPersonIds.containsAll(expectedPersonIds));
+    }
+
+    @Test
+    public void testLogicUsingDataSampleWithOrNotCondition()
+    {
+        DataSample dataSample = new DataSample();
+        List<Person> persons = dataSample.getSampleData();
+
+        Predicate<Person> livesInFrankfurt = person -> person.city().equals("Frankfurt");
+        Predicate<Person> thirtyOrOlder = person -> person.age() >= 30;
+
+        Logic<Person> logic = new Logic.Builder<Person>()
+                .addGroup(new Group.Builder<Person>("group1")
+                        .withCheck("livesInFrankfurt", livesInFrankfurt)
+                        .build())
+                .addGroup(new Group.Builder<Person>("group2")
+                        .connectorToPreviousGroup(GroupConnectorType.OR_NOT)
+                        .withCheck("30 or older", thirtyOrOlder)
+                        .build())
+                .build();
+
+        List<Integer> expectedPersonIds = List.of(1,3,4,5,6,7,8,9);
+
+        List <Integer> evaluatedPersonIds = persons.stream()
+                .filter(person -> logic.evaluate(person).passed())
+                .map(person -> person.id())
+                .toList();
+
+        assert(evaluatedPersonIds.size()== expectedPersonIds.size());
+        assert(evaluatedPersonIds.containsAll(expectedPersonIds));
     }
 }

@@ -82,7 +82,7 @@ public class EvaluationResult<T>
             }
             case OR_NOT ->
             {
-                return !(groupResult2.passed() || intermediateResult);
+                return !groupResult2.passed() || intermediateResult;
             }
             default -> throw new IllegalStateException("unexpected value: " + groupResult2.getConnectorToPreviousGroup());
         }
