@@ -50,6 +50,11 @@ public class EvaluationResult<T>
         return passed;
     }
 
+    public boolean failed()
+    {
+        return !passed;
+    }
+
     private void evaluate()
     {
         boolean result = false;

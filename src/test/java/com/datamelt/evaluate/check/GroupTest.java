@@ -120,22 +120,21 @@ public class GroupTest
     @Test
     public void testThreeGroupsUsingAndNorConditionFailed()
     {
-        // NOR only gives a true result, if the group and the result of the previous groups are false
         Logic<Integer> logic = new Logic.Builder<Integer>()
                 .addGroup(new Group.Builder<Integer>("group1")
                         .withCheck("is greater", value -> value > 1000)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group2")
-                        .withCheck("is greater", value -> value > 5000)
+                        .withCheck("is smaller equals", value -> value <= 5000)
                         .connectorToPreviousGroup(GroupConnectorType.AND)
                         .build())
                 .addGroup(new Group.Builder<Integer>("group3")
-                        .withCheck("is smaller", value -> value < 7500)
+                        .withCheck("is greater", value -> value > 10000)
                         .connectorToPreviousGroup(GroupConnectorType.OR_NOT)
                         .build())
                 .build();
 
-        assert(!logic.evaluate(8000).passed());
+        assert(logic.evaluate(15000).failed());
     }
 
     @Test
